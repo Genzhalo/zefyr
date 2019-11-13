@@ -379,11 +379,11 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
 
   /// Formats a block of lines as a bullet list.
   NotusAttribute<String> get bulletList =>
-      NotusAttribute<String>._(key, scope, 'ordered');
+      NotusAttribute<String>._(key, scope, 'bullet');
 
   /// Formats a block of lines as a number list.
   NotusAttribute<String> get numberList =>
-      NotusAttribute<String>._(key, scope, 'bullet');
+      NotusAttribute<String>._(key, scope, 'ordered');
 
   /// Formats a block of lines as a code snippet, using monospace font.
   NotusAttribute<String> get code =>
