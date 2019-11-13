@@ -75,7 +75,7 @@ class ZefyrThemeData {
       fontWeight: FontWeight.normal,
       color: Colors.grey.shade800,
     );
-    final padding = const EdgeInsets.only(bottom: 16.0);
+    final padding = const EdgeInsets.only(bottom: 8.0);
     final boldStyle = TextStyle(fontWeight: FontWeight.bold);
     final italicStyle = TextStyle(fontStyle: FontStyle.italic);
     final underlineStyle = TextStyle(decoration: TextDecoration.underline);

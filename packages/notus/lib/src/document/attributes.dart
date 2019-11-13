@@ -332,7 +332,7 @@ class _ItalicAttribute extends NotusAttribute<bool> {
   const _ItalicAttribute() : super._('i', NotusAttributeScope.inline, true);
 }
 
-
+/// Applies underline style to a text segment.
 class _UnderlineAttribute extends NotusAttribute<bool> {
   const _UnderlineAttribute() : super._('u', NotusAttributeScope.inline, true);
 }
