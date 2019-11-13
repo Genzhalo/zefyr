@@ -188,6 +188,7 @@ class RawZefyrButton extends StatelessWidget {
         fillColor: color,
         constraints: constraints,
         onPressed: onPressed,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         child: child,
       ),
     );
