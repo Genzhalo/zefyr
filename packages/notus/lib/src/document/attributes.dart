@@ -342,7 +342,7 @@ class _UnderlineAttribute extends NotusAttribute<bool> {
 /// There is no need to use this class directly, consider using
 /// [NotusAttribute.link] instead.
 class LinkAttributeBuilder extends NotusAttributeBuilder<String> {
-  static const _kLink = 'a';
+  static const _kLink = 'link';
   const LinkAttributeBuilder._() : super._(_kLink, NotusAttributeScope.inline);
 
   /// Creates a link attribute with specified link [value].
