@@ -374,16 +374,16 @@ class HeadingAttributeBuilder extends NotusAttributeBuilder<int> {
 /// There is no need to use this class directly, consider using
 /// [NotusAttribute.block] instead.
 class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
-  static const _kBlock = 'block';
+  static const _kBlock = 'list';
   const BlockAttributeBuilder._() : super._(_kBlock, NotusAttributeScope.line);
 
   /// Formats a block of lines as a bullet list.
   NotusAttribute<String> get bulletList =>
-      NotusAttribute<String>._(key, scope, 'ul');
+      NotusAttribute<String>._(key, scope, 'ordered');
 
   /// Formats a block of lines as a number list.
   NotusAttribute<String> get numberList =>
-      NotusAttribute<String>._(key, scope, 'ol');
+      NotusAttribute<String>._(key, scope, 'bullet');
 
   /// Formats a block of lines as a code snippet, using monospace font.
   NotusAttribute<String> get code =>
