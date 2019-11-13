@@ -28,6 +28,7 @@ attributes in Zefyr:
 |---------|-----------|----------|----------|----------------------------------------|
 | Bold    | `b`       | `inline` | `bool`   | `true`                                 |
 | Italic  | `i`       | `inline` | `bool`   | `true`                                 |
+| Underline  | `u`       | `inline` | `bool`   | `true`                                 |
 | Link    | `a`       | `inline` | `String` | Non-empty string                       |
 | Heading | `heading` | `line`   | `int`    | `1`, `2` and `3`                       |
 | Block   | `block`   | `line`   | `String` | `"ul"`, `"ol"`, `"code"` and `"quote"` |

@@ -54,6 +54,7 @@ class ZefyrTheme extends InheritedWidget {
 class ZefyrThemeData {
   final TextStyle boldStyle;
   final TextStyle italicStyle;
+  final TextStyle underlineStyle;
   final TextStyle linkStyle;
   final StyleTheme paragraphTheme;
   final HeadingTheme headingTheme;
@@ -77,12 +78,14 @@ class ZefyrThemeData {
     final padding = const EdgeInsets.only(bottom: 16.0);
     final boldStyle = TextStyle(fontWeight: FontWeight.bold);
     final italicStyle = TextStyle(fontStyle: FontStyle.italic);
+    final underlineStyle = TextStyle(decoration: TextDecoration.underline);
     final linkStyle =
         TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
 
     return ZefyrThemeData(
       boldStyle: boldStyle,
       italicStyle: italicStyle,
+      underlineStyle: underlineStyle,
       linkStyle: linkStyle,
       paragraphTheme: StyleTheme(textStyle: paragraphStyle, padding: padding),
       headingTheme: HeadingTheme.fallback(),
@@ -97,6 +100,7 @@ class ZefyrThemeData {
   const ZefyrThemeData({
     this.boldStyle,
     this.italicStyle,
+    this.underlineStyle,
     this.linkStyle,
     this.paragraphTheme,
     this.headingTheme,
