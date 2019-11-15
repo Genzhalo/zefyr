@@ -148,12 +148,12 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
       child: body,
     );
 
-    final layers = <Widget>[body];
-    layers.add(ZefyrSelectionOverlay(
-      controls: widget.selectionControls ?? defaultSelectionControls(context),
-    ));
-
-    return Stack(fit: StackFit.expand, children: layers);
+    return Stack(children: [
+      body,
+      Positioned(top: 0, left: 0, right: 0, bottom: 0, child: ZefyrSelectionOverlay(
+        controls: widget.selectionControls ?? defaultSelectionControls(context),
+      ))
+    ]);
   }
 
   @override
