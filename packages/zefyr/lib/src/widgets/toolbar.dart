@@ -58,8 +58,12 @@ final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
 abstract class ZefyrToolbarDelegate {
   /// Builds toolbar button for specified [action].
   ///
+  ///
+  List<Widget> get buttons => [];
+  Widget get trailing  => null;
+
   /// Returned widget is usually an instance of [ZefyrButton].
-  Widget buildButton(BuildContext context, ZefyrToolbarAction action,
+  Widget buildButton(BuildContext context, ZefyrToolbarAction action, 
       {VoidCallback onPressed});
 }
 
@@ -223,8 +227,8 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     // new state each time we toggle overlay.
     final toolbar = ZefyrToolbarScaffold(
       key: _toolbarKey,
-      body: ZefyrButtonList(buttons: _buildButtons(context)),
-      trailing: buildButton(context, ZefyrToolbarAction.custom),
+      body: ZefyrButtonList(buttons:  _delegate.buttons),
+      trailing: _delegate.trailing,
     );
 
     layers.add(toolbar);
@@ -249,23 +253,6 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
         child: Stack(children: layers),
       ),
     );
-  }
-
-  List<Widget> _buildButtons(BuildContext context) {
-    final buttons = <Widget>[
-      buildButton(context, ZefyrToolbarAction.bold),
-      buildButton(context, ZefyrToolbarAction.italic),
-      buildButton(context, ZefyrToolbarAction.underline),
-      LinkButton(),
-      // HeadingButton(),
-      buildButton(context, ZefyrToolbarAction.bulletList),
-      buildButton(context, ZefyrToolbarAction.numberList),
-      // buildButton(context, ZefyrToolbarAction.quote),
-      // buildButton(context, ZefyrToolbarAction.code),
-      // buildButton(context, ZefyrToolbarAction.horizontalRule),
-      // if (editor.imageDelegate != null) ImageButton(),
-    ];
-    return buttons;
   }
 }
 
@@ -371,7 +358,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   static const kDefaultButtonTexts = {
     ZefyrToolbarAction.headingLevel1: 'H1',
     ZefyrToolbarAction.headingLevel2: 'H2',
-    ZefyrToolbarAction.headingLevel3: 'H3',
+    ZefyrToolbarAction.headingLevel3: 'H3'
   };
 
   @override
@@ -400,4 +387,13 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
       );
     }
   }
+
+  @override
+  List<Widget> get buttons => [];
+
+  @override
+  Widget get trailing => null;
+
+
+
 }

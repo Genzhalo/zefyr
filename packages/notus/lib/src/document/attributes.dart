@@ -68,6 +68,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.italic]
 ///   * [NotusAttribute.underline]
 ///   * [NotusAttribute.link]
+///   * [NotusAttribute.mention]
 ///   * [NotusAttribute.heading]
 ///   * [NotusAttribute.block]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
@@ -75,6 +76,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.bold.key: NotusAttribute.bold,
     NotusAttribute.italic.key: NotusAttribute.italic,
     NotusAttribute.underline.key: NotusAttribute.underline,
+    NotusAttribute.mention.key: NotusAttribute.mention,
     NotusAttribute.link.key: NotusAttribute.link,
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.block.key: NotusAttribute.block,
@@ -91,6 +93,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Underline style attribute.
   static const underline = _UnderlineAttribute();
+
+  /// mention style attribute.
+  static const mention = _MentionAttribute();
 
   /// Link style attribute.
   // ignore: const_eval_throws_exception
@@ -335,6 +340,11 @@ class _ItalicAttribute extends NotusAttribute<bool> {
 /// Applies underline style to a text segment.
 class _UnderlineAttribute extends NotusAttribute<bool> {
   const _UnderlineAttribute() : super._('underline', NotusAttributeScope.inline, true);
+}
+
+/// Applies mention style to a text segment.
+class _MentionAttribute extends NotusAttribute<bool> {
+  const _MentionAttribute() : super._('mention', NotusAttributeScope.inline, true);
 }
 
 /// Builder for link attribute values.
