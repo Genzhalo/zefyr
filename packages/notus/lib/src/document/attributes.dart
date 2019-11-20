@@ -95,7 +95,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static const underline = _UnderlineAttribute();
 
   /// mention style attribute.
-  static const mention = _MentionAttribute();
+  static const mention = _MentionAttributeBuilder._();
 
   /// Link style attribute.
   // ignore: const_eval_throws_exception
@@ -343,8 +343,9 @@ class _UnderlineAttribute extends NotusAttribute<bool> {
 }
 
 /// Applies mention style to a text segment.
-class _MentionAttribute extends NotusAttribute<bool> {
-  const _MentionAttribute() : super._('mention', NotusAttributeScope.inline, true);
+
+class _MentionAttributeBuilder extends NotusAttributeBuilder<String> {
+  const _MentionAttributeBuilder._() : super._('mention', NotusAttributeScope.inline);
 }
 
 /// Builder for link attribute values.
