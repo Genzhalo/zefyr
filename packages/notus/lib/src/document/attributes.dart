@@ -94,14 +94,14 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Underline style attribute.
   static const underline = _UnderlineAttribute();
 
-  /// mention style attribute.
-  static const mention = _MentionAttributeBuilder._();
-
   /// Link style attribute.
   // ignore: const_eval_throws_exception
   static const link = LinkAttributeBuilder._();
 
+  static const mention = _MentionAttributeBuilder._();
   // Line attributes
+
+    
 
   /// Heading style attribute.
   // ignore: const_eval_throws_exception
