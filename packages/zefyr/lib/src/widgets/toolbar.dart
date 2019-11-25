@@ -35,6 +35,7 @@ enum ZefyrToolbarAction {
   hideKeyboard,
   close,
   confirm,
+  mention,
   custom
 }
 
@@ -42,6 +43,7 @@ final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
   ZefyrToolbarAction.bold: NotusAttribute.bold,
   ZefyrToolbarAction.italic: NotusAttribute.italic,
   ZefyrToolbarAction.underline: NotusAttribute.underline,
+  ZefyrToolbarAction.mention: NotusAttribute.mention,
   ZefyrToolbarAction.link: NotusAttribute.link,
   ZefyrToolbarAction.heading: NotusAttribute.heading,
   ZefyrToolbarAction.headingLevel1: NotusAttribute.heading.level1,
