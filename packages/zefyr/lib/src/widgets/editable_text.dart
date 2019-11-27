@@ -40,10 +40,14 @@ class ZefyrEditableText extends StatefulWidget {
     this.mode = ZefyrMode.edit,
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.physics,
+    this.firstChild
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
         super(key: key);
+
+
+  final Widget firstChild;      
 
   /// Controls the document being edited.
   final ZefyrController controller;
@@ -219,7 +223,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   bool _didAutoFocus = false;
 
   List<Widget> _buildChildren(BuildContext context) {
-    final result = <Widget>[];
+    List<Widget> result = widget.firstChild != null ? [ widget.firstChild ] : []; 
     for (var node in document.root.children) {
       result.add(_defaultChildBuilder(context, node));
     }
