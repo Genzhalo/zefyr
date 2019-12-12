@@ -60,6 +60,10 @@ class InputConnectionController implements TextInputClient {
     }
   }
 
+  @override
+  void connectionClosed(){
+  }
+
   /// Updates remote value based on current state of [document] and
   /// [selection].
   ///
