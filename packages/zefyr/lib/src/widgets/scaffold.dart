@@ -47,7 +47,7 @@ class ZefyrScaffoldState extends State<ZefyrScaffold> {
         mainAxisSize: widget.isAutoResize ? MainAxisSize.min : MainAxisSize.max,
         children: <Widget>[
           wrapChild,
-          Divider(height: 1),
+          _toolbarBuilder != null ? Divider(height: 1) : Container(),
           toolbar,
         ],
       ),

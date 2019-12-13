@@ -6,18 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 
-import 'code.dart';
-import 'common.dart';
 import 'controller.dart';
 import 'cursor_timer.dart';
 import 'editor.dart';
 import 'image.dart';
 import 'input.dart';
-import 'list.dart';
 import 'mode.dart';
-import 'paragraph.dart';
-import 'quote.dart';
 import 'render_context.dart';
+import 'render_document.dart';
 import 'scope.dart';
 import 'selection.dart';
 import 'theme.dart';
@@ -141,15 +137,13 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     _focusAttachment.reparent();
     super.build(context); // See AutomaticKeepAliveState.
 
-    Widget body = ListBody(children: _buildChildren(context));
-    if (widget.padding != null) {
-      body = Padding(padding: widget.padding, child: body);
-    }
-
-    body = SingleChildScrollView(
+    final body = SingleChildScrollView(
       physics: widget.physics,
       controller: _scrollController,
-      child: body,
+      child: Padding(
+        padding: widget.padding ?? EdgeInsets.zero,
+        child: RenderZefyrDocument(document: document, firstChild: widget.firstChild),
+      ),
     );
 
     return Stack(children: [
@@ -221,39 +215,6 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   CursorTimer _cursorTimer;
   InputConnectionController _input;
   bool _didAutoFocus = false;
-
-  List<Widget> _buildChildren(BuildContext context) {
-    List<Widget> result = widget.firstChild != null ? [ widget.firstChild ] : []; 
-    for (var node in document.root.children) {
-      result.add(_defaultChildBuilder(context, node));
-    }
-    return result;
-  }
-
-  Widget _defaultChildBuilder(BuildContext context, Node node) {
-    if (node is LineNode) {
-      if (node.hasEmbed) {
-        return RawZefyrLine(node: node);
-      } else if (node.style.contains(NotusAttribute.heading)) {
-        return ZefyrHeading(node: node);
-      }
-      return ZefyrParagraph(node: node);
-    }
-
-    final BlockNode block = node;
-    final blockStyle = block.style.get(NotusAttribute.block);
-    if (blockStyle == NotusAttribute.block.code) {
-      return ZefyrCode(node: block);
-    } else if (blockStyle == NotusAttribute.block.bulletList) {
-      return ZefyrList(node: block);
-    } else if (blockStyle == NotusAttribute.block.numberList) {
-      return ZefyrList(node: block);
-    } else if (blockStyle == NotusAttribute.block.quote) {
-      return ZefyrQuote(node: block);
-    }
-
-    throw UnimplementedError('Block format $blockStyle.');
-  }
 
   void _updateSubscriptions([ZefyrEditableText oldWidget]) {
     if (oldWidget == null) {
