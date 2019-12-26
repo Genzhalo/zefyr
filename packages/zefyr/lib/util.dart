@@ -33,6 +33,9 @@ int getPositionDelta(Delta user, Delta actual) {
       }
       diff += actualOp.length;
     } else {
+      if (userOp.isRetain && actualOp.isDelete){
+         diff -= actualOp.length;
+      }
       // TODO: this likely needs to cover more edge cases.
     }
   }

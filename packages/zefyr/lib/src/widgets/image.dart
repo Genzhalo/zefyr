@@ -154,7 +154,7 @@ class RenderEditableImage extends RenderBox
   }
 
   @override
-  TextRange getWordBoundary(TextPosition position) {
+  ui.TextRange getWordRange(Offset offset) {
     final start = _node.documentOffset;
     return TextRange(start: start, end: start + 1);
   }

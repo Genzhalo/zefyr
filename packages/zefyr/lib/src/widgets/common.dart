@@ -120,6 +120,13 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
     final TextNode segment = node;
     final attrs = segment.style;
 
+    if (attrs.contains(NotusAttribute.mention)){
+      return MentionTextSpan(
+        text: segment.value,
+        style: _getTextStyle(attrs, theme),
+      );
+    }
+
     return TextSpan(
       text: segment.value,
       style: _getTextStyle(attrs, theme),
@@ -158,4 +165,9 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
       throw UnimplementedError('Unimplemented embed type ${embed.type}');
     }
   }
+}
+
+
+class MentionTextSpan extends TextSpan {
+  MentionTextSpan({ String text, TextStyle style }) : super(text: text, style: style);
 }

@@ -10,6 +10,7 @@ import 'package:notus/notus.dart';
 
 import 'caret.dart';
 import 'editable_box.dart';
+import 'common.dart';
 
 /// Represents single paragraph of Zefyr rich-text.
 class ZefyrRichText extends LeafRenderObjectWidget {
@@ -82,7 +83,6 @@ class RenderZefyrParagraph extends RenderParagraph
   @override
   TextSelection getLocalSelection(TextSelection documentSelection) {
     if (!intersectsWithSelection(documentSelection)) return null;
-
     int nodeBase = node.documentOffset;
     int nodeExtent = nodeBase + node.length;
     int base = math.max(0, documentSelection.baseOffset - nodeBase);
@@ -95,18 +95,15 @@ class RenderZefyrParagraph extends RenderParagraph
   TextPosition getPositionForOffset(Offset offset) {
     final position = super.getPositionForOffset(offset);
     return TextPosition(
-      offset: _node.documentOffset + position.offset,
+      offset: _node.documentOffset + position.offset + getMentionDislocation(position),
       affinity: position.affinity,
     );
   }
 
   @override
-  TextRange getWordBoundary(TextPosition position) {
-    final localPosition = TextPosition(
-      offset: position.offset - _node.documentOffset,
-      affinity: position.affinity,
-    );
-    final localRange = super.getWordBoundary(localPosition);
+  TextRange getWordRange(Offset offset) {
+    final position = super.getPositionForOffset(offset);
+    final localRange = isMention(position) ? getMentionRange(position.offset) : super.getWordBoundary(position);
     return TextRange(
       start: _node.documentOffset + localRange.start,
       end: _node.documentOffset + localRange.end,
@@ -116,7 +113,7 @@ class RenderZefyrParagraph extends RenderParagraph
   @override
   Offset getOffsetForCaret(TextPosition position, Rect caretPrototype) {
     final localPosition = TextPosition(
-      offset: position.offset - _node.documentOffset,
+      offset: position.offset - _node.documentOffset + getMentionDislocation(position),
       affinity: position.affinity,
     );
     return super.getOffsetForCaret(localPosition, caretPrototype);
@@ -224,4 +221,36 @@ class RenderZefyrParagraph extends RenderParagraph
     }
     _lastPaintedSelection = selection;
   }
+
+  bool isMention(TextPosition position){
+    final span = text.getSpanForPosition(position);
+    return span is MentionTextSpan;
+  }
+
+  TextRange getMentionRange(int offset) {
+    int start = 0;
+    int end = 0;
+    for (var mention in text.children) {
+      end = start + mention.text.length;
+      if (end > offset) return TextRange(start: start, end: end);
+      start += mention.text.length;
+    } 
+    return null;
+  }
+
+  int getMentionDislocation(TextPosition position){
+    if (isMention(position)) {
+      final range = getMentionRange(position.offset);
+      if (range != null) return getDislocation(range, position.offset);
+    }
+    return 0;
+  }
+
+  int getDislocation(TextRange range, int offset) {
+    if (range.start <= offset && range.end >= offset) {
+      return  ((range.end + range.start)/2 <= offset ) ? range.end - offset + 1: range.start - offset; 
+    }
+    return 0;
+  }
+
 }

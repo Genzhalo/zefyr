@@ -92,12 +92,6 @@ class RenderHorizontalRule extends RenderEditableBox {
   }
 
   @override
-  TextRange getWordBoundary(TextPosition position) {
-    final start = _node.documentOffset;
-    return TextRange(start: start, end: start + 1);
-  }
-
-  @override
   void paintSelection(PaintingContext context, Offset offset,
       TextSelection selection, Color selectionColor) {
     final localSelection = getLocalSelection(selection);
@@ -117,5 +111,11 @@ class RenderHorizontalRule extends RenderEditableBox {
       caretOffset = caretOffset + Offset(size.width - 1.0, 0.0);
     }
     return caretOffset;
+  }
+
+  @override
+  ui.TextRange getWordRange(ui.Offset offset) {
+    final start = _node.documentOffset;
+    return TextRange(start: start, end: start + 1);
   }
 }

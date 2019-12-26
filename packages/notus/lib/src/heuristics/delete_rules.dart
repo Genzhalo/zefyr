@@ -131,3 +131,21 @@ class EnsureEmbedLineRule extends DeleteRule {
     return null; // fallback
   }
 }
+
+class EnsureMentionLineRule extends DeleteRule {
+  const EnsureMentionLineRule();
+
+  @override
+  Delta apply(Delta document, int index, int length) {
+    DeltaIterator iter = DeltaIterator(document);
+    Operation op = iter.skip(index);
+    if (op != null && op.hasAttribute("mention")){
+      return Delta()
+        ..retain(index - op.length)
+        ..delete(op.length + length);
+    }
+   
+    return null; // fallback
+  }
+}
+

@@ -4,13 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:notus/notus.dart';
-
-import 'code.dart';
-import 'common.dart';
+import 'package:zefyr/zefyr.dart';
 import 'image.dart';
-import 'list.dart';
-import 'paragraph.dart';
-import 'quote.dart';
 import 'scope.dart';
 import 'theme.dart';
 
@@ -67,44 +62,8 @@ class ZefyrViewState extends State<ZefyrView> {
       data: _themeData,
       child: ZefyrScopeAccess(
         scope: _scope,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _buildChildren(context),
-        ),
+        child: RenderZefyrDocument(document: widget.document)
       ),
     );
-  }
-
-  List<Widget> _buildChildren(BuildContext context) {
-    final result = <Widget>[];
-    for (var node in widget.document.root.children) {
-      result.add(_defaultChildBuilder(context, node));
-    }
-    return result;
-  }
-
-  Widget _defaultChildBuilder(BuildContext context, Node node) {
-    if (node is LineNode) {
-      if (node.hasEmbed) {
-        return RawZefyrLine(node: node);
-      } else if (node.style.contains(NotusAttribute.heading)) {
-        return ZefyrHeading(node: node);
-      }
-      return ZefyrParagraph(node: node);
-    }
-
-    final BlockNode block = node;
-    final blockStyle = block.style.get(NotusAttribute.block);
-    if (blockStyle == NotusAttribute.block.code) {
-      return ZefyrCode(node: block);
-    } else if (blockStyle == NotusAttribute.block.bulletList) {
-      return ZefyrList(node: block);
-    } else if (blockStyle == NotusAttribute.block.numberList) {
-      return ZefyrList(node: block);
-    } else if (blockStyle == NotusAttribute.block.quote) {
-      return ZefyrQuote(node: block);
-    }
-
-    throw UnimplementedError('Block format $blockStyle.');
   }
 }

@@ -33,6 +33,7 @@ class NotusHeuristics {
       CatchAllInsertRule(),
     ],
     deleteRules: [
+      EnsureMentionLineRule(),
       EnsureEmbedLineRule(),
       PreserveLineStyleOnMergeRule(),
       CatchAllDeleteRule(),

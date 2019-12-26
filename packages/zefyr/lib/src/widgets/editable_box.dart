@@ -279,8 +279,8 @@ class RenderEditableProxyBox extends RenderBox
       child.getPositionForOffset(offset);
 
   @override
-  TextRange getWordBoundary(ui.TextPosition position) =>
-      child.getWordBoundary(position);
+  TextRange getWordRange(ui.Offset offset) =>
+      child.getWordRange(offset);
 }
 
 enum SelectionOrder {
@@ -307,7 +307,7 @@ abstract class RenderEditableBox extends RenderBox {
   /// <http://www.unicode.org/reports/tr29/#Word_Boundaries>.
   ///
   /// Valid only after [layout].
-  TextRange getWordBoundary(TextPosition position);
+  TextRange getWordRange(Offset offset);
 
   /// Paint order of selection in this editable box.
   SelectionOrder get selectionOrder;

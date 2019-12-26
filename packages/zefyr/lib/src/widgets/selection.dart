@@ -277,8 +277,7 @@ class _ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
       return;
     }
     final localPoint = box.globalToLocal(globalPoint);
-    final position = box.getPositionForOffset(localPoint);
-    final word = box.getWordBoundary(position);
+    final word = box.getWordRange(localPoint);
     final selection = TextSelection(
       baseOffset: word.start,
       extentOffset: word.end,
