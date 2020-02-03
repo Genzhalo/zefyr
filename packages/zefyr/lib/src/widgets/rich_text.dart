@@ -228,21 +228,21 @@ class RenderZefyrParagraph extends RenderParagraph
   }
 
   TextRange getMentionRange(int offset) {
-    int start = 0;
-    int end = 0;
-    for (var mention in text.children) {
-      end = start + mention.text.length;
-      if (end > offset) return TextRange(start: start, end: end);
-      start += mention.text.length;
+    int start = 0, end = 0;
+    for (var span in text.children) {
+      end = start + (span as TextSpan).text.length;
+      if (start < offset && end >= offset ) {
+        return span is MentionTextSpan ? TextRange(start: start, end: end) : null;
+      }
+      start = end;
     } 
     return null;
   }
 
   int getMentionDislocation(TextPosition position){
-    if (isMention(position)) {
-      final range = getMentionRange(position.offset);
-      if (range != null) return getDislocation(range, position.offset);
-    }
+
+    final range = getMentionRange(position.offset);
+    if (range != null) return getDislocation(range, position.offset);
     return 0;
   }
 
