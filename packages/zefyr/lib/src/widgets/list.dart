@@ -26,6 +26,7 @@ class ZefyrList extends StatelessWidget {
 
     final isNumberList =
         node.style.get(NotusAttribute.block) == NotusAttribute.block.numberList;
+
     EdgeInsets padding = isNumberList
         ? theme.blockTheme.numberList.padding
         : theme.blockTheme.bulletList.padding;
@@ -60,7 +61,7 @@ class ZefyrListItem extends StatelessWidget {
 
     TextStyle textStyle;
     Widget content;
-    EdgeInsets padding;
+    EdgeInsets padding = EdgeInsets.zero;
 
     if (node.style.contains(NotusAttribute.heading)) {
       final headingTheme = ZefyrHeading.themeOf(node, context);
@@ -72,11 +73,15 @@ class ZefyrListItem extends StatelessWidget {
       content = RawZefyrLine(node: node, style: textStyle);
     }
 
-    Widget bullet =
-        SizedBox(width: 24.0, child: Text(bulletText, style: textStyle));
-    if (padding != null) {
-      bullet = Padding(padding: padding, child: bullet);
+    if (node.style.contains(NotusAttribute.indent)){
+      final value = node.style.value(NotusAttribute.indent);
+      padding = padding + EdgeInsets.only(left: value * theme.indentSize);
     }
+
+    Widget bullet = Padding(
+      padding: padding,
+      child: SizedBox(width: 24.0, child: Text(bulletText, style: textStyle))
+    );
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
