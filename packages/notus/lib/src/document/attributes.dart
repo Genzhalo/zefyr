@@ -81,6 +81,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.block.key: NotusAttribute.block,
     NotusAttribute.embed.key: NotusAttribute.embed,
+    NotusAttribute.indent.key: NotusAttribute.indent
   };
 
   // Inline attributes
@@ -101,7 +102,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static const mention = _MentionAttributeBuilder._();
   // Line attributes
 
-    
+  static const indent = _IndentAttributeBuilder();
 
   /// Heading style attribute.
   // ignore: const_eval_throws_exception
@@ -325,6 +326,10 @@ class NotusStyle {
 
   @override
   String toString() => "{${_data.values.join(', ')}}";
+}
+
+class _IndentAttributeBuilder extends NotusAttributeBuilder<int> {
+   const _IndentAttributeBuilder() : super._('indent', NotusAttributeScope.line);
 }
 
 /// Applies bold style to a text segment.
