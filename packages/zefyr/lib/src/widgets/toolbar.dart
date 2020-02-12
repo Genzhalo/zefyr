@@ -304,13 +304,13 @@ class _ZefyrButtonListState extends State<ZefyrButtonList> {
         SizedBox(
           width: 12.0,
           height: ZefyrToolbar.kToolbarHeight,
-          child: Container(child: leftArrow, color: theme.color),
+          child: Container(child: leftArrow),
         ),
         Expanded(child: ClipRect(child: list)),
         SizedBox(
           width: 12.0,
           height: ZefyrToolbar.kToolbarHeight,
-          child: Container(child: rightArrow, color: theme.color),
+          child: Container(child: rightArrow),
         ),
       ],
     );

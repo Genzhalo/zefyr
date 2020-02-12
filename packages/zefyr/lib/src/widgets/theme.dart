@@ -73,7 +73,7 @@ class ZefyrThemeData {
       fontSize: 16.0,
       height: 1.25,
       fontWeight: FontWeight.normal,
-      color: Colors.grey.shade800,
+      // color: Colors.grey.shade800,
     );
     final padding = const EdgeInsets.only(bottom: 8.0);
     final boldStyle = TextStyle(fontWeight: FontWeight.bold);
