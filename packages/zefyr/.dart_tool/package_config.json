@@ -81,7 +81,7 @@
     },
     {
       "name": "notus",
-      "rootUri": "file:///Users/maryangenzhalo/flutter/.pub-cache/git/zefyr-bbdf835d87626bd47cf168ef2222795aee49a642/packages/notus",
+      "rootUri": "file:///Users/maryangenzhalo/flutter/.pub-cache/git/zefyr-2a0a4a4535f66abd9663bc3197f8dfceb7a7058d/packages/notus",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -200,7 +200,7 @@
       "languageVersion": "2.2"
     }
   ],
-  "generated": "2020-02-07T15:17:10.827472Z",
+  "generated": "2020-02-12T13:44:26.578820Z",
   "generator": "pub",
   "generatorVersion": "2.7.0"
 }
