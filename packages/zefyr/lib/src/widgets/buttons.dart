@@ -417,7 +417,7 @@ class _LinkButtonState extends State<LinkButton> {
     assert(link != null);
     if (await canLaunch(link)) {
       editor.hideKeyboard();
-      await launch(link, forceWebView: true);
+      await launch(link);
     }
   }
 

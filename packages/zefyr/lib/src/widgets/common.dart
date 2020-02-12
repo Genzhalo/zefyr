@@ -130,7 +130,7 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
           var link = attrs.value(NotusAttribute.link);
           assert(link != null);
           if (await canLaunch(link)) {
-            await launch(link, forceWebView: true);
+            await launch(link);
           }
         }
       );
