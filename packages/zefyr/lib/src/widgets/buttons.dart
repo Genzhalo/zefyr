@@ -70,13 +70,13 @@ class ZefyrButton extends StatelessWidget {
     final pressedHandler = _getPressedHandler(editor, toolbar);
     final iconColor = (pressedHandler == null)
         ? toolbarTheme.disabledIconColor
-        : toolbarTheme.iconColor;
+        : null; //toolbarTheme.iconColor;
     if (_icon != null) {
       return RawZefyrButton.icon(
         action: action,
         icon: _icon,
         size: _iconSize,
-        iconColor: iconColor,
+        // iconColor: iconColor,
         color: _getColor(editor, toolbarTheme),
         onPressed: _getPressedHandler(editor, toolbar),
       );
@@ -525,13 +525,13 @@ class _LinkInputState extends State<_LinkInput> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
-    final color =
-        widget.formatError ? Colors.redAccent : toolbarTheme.iconColor;
-    final style = theme.textTheme.subhead.copyWith(color: color);
+    // final theme = Theme.of(context);
+    // final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
+    // final color =
+    //     widget.formatError ? Colors.redAccent : toolbarTheme.iconColor;
+    // final style = theme.textTheme.subhead.copyWith(color: color);
     return TextField(
-      style: style,
+      // style: style,
       keyboardType: TextInputType.url,
       focusNode: _focusNode,
       controller: widget.controller,
@@ -539,7 +539,7 @@ class _LinkInputState extends State<_LinkInput> {
       decoration: InputDecoration(
         hintText: 'https://',
         filled: true,
-        fillColor: toolbarTheme.color,
+        // fillColor: toolbarTheme.color,
         border: InputBorder.none,
         contentPadding: const EdgeInsets.all(10.0),
       ),
@@ -555,8 +555,8 @@ class _LinkView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
+    // final theme = Theme.of(context);
+    // final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
     Widget widget = ClipRect(
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -569,8 +569,8 @@ class _LinkView extends StatelessWidget {
               value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.subhead
-                  .copyWith(color: toolbarTheme.disabledIconColor),
+              // style: theme.textTheme.subhead
+              //     .copyWith(color: toolbarTheme.disabledIconColor),
             ),
           )
         ],

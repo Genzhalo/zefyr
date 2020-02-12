@@ -91,7 +91,7 @@ class ZefyrThemeData {
       headingTheme: HeadingTheme.fallback(),
       blockTheme: BlockTheme.fallback(themeData),
       selectionColor: Colors.lightBlueAccent.shade100,
-      cursorColor: Colors.black,
+      cursorColor: themeData.cursorColor,
       indentSize: 16.0,
       toolbarTheme: ZefyrToolbarTheme.fallback(context),
     );

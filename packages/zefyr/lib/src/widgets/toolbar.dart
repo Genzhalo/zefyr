@@ -84,7 +84,7 @@ class ZefyrToolbarScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context).toolbarTheme;
+    // final theme = ZefyrTheme.of(context).toolbarTheme;
     final toolbar = ZefyrToolbar.of(context);
     final constraints =
         BoxConstraints.tightFor(height: ZefyrToolbar.kToolbarHeight);
@@ -99,7 +99,7 @@ class ZefyrToolbarScaffold extends StatelessWidget {
     }
     return Container(
       constraints: constraints,
-      child: Material(color: theme.color, child: Row(children: children)),
+      child: Material(child: Row(children: children)),
     );
   }
 }
