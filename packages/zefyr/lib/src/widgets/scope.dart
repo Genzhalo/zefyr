@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/widgets/looker.dart';
 
 import 'controller.dart';
 import 'cursor_timer.dart';
@@ -25,10 +26,11 @@ class ZefyrScope extends ChangeNotifier {
   /// Creates a view-only scope.
   ///
   /// Normally used in [ZefyrView].
-  ZefyrScope.view({ZefyrImageDelegate imageDelegate})
+  ZefyrScope.view({ZefyrImageDelegate imageDelegate, ZefyrLookerDelegate lookerDelegate})
       : isEditable = false,
         _mode = ZefyrMode.view,
-        _imageDelegate = imageDelegate;
+        _imageDelegate = imageDelegate,
+        _lookerDelegate = lookerDelegate;
 
   /// Creates editable scope.
   ///
@@ -39,6 +41,7 @@ class ZefyrScope extends ChangeNotifier {
     @required FocusNode focusNode,
     @required FocusScopeNode focusScope,
     ZefyrImageDelegate imageDelegate,
+    ZefyrLookerDelegate lookerDelegate,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -47,6 +50,7 @@ class ZefyrScope extends ChangeNotifier {
         _mode = mode,
         _controller = controller,
         _imageDelegate = imageDelegate,
+        _lookerDelegate = lookerDelegate,
         _focusNode = focusNode,
         _focusScope = focusScope,
         _cursorTimer = CursorTimer(),
@@ -61,6 +65,15 @@ class ZefyrScope extends ChangeNotifier {
     final ZefyrScopeAccess widget =
         context.inheritFromWidgetOfExactType(ZefyrScopeAccess);
     return widget.scope;
+  }
+
+  ZefyrLookerDelegate _lookerDelegate;
+  ZefyrLookerDelegate get lookerDelegate => _lookerDelegate;
+  set lookerDelegate(ZefyrLookerDelegate value) {
+    if (_lookerDelegate != value) {
+      _lookerDelegate = value;
+      notifyListeners();
+    }
   }
 
   ZefyrImageDelegate _imageDelegate;

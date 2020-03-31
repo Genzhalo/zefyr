@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:zefyr/src/widgets/looker.dart';
 
 import 'controller.dart';
 import 'editable_text.dart';
@@ -25,6 +26,7 @@ class ZefyrEditor extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.toolbarDelegate,
     this.imageDelegate,
+    this.lookerDelegate,
     this.selectionControls,
     this.physics,
     this.firstChild
@@ -60,6 +62,12 @@ class ZefyrEditor extends StatefulWidget {
   ///
   /// This delegate is required if embedding images is allowed.
   final ZefyrImageDelegate imageDelegate;
+
+
+  /// Delegate for resolving embedded images.
+  ///
+  /// This delegate is required if embedding loooker is allowed.
+  final ZefyrLookerDelegate lookerDelegate;
 
   /// Optional delegate for building the text selection handles and toolbar.
   ///
@@ -137,6 +145,10 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       _imageDelegate = widget.imageDelegate;
       _scope.imageDelegate = _imageDelegate;
     }
+
+     if (widget.lookerDelegate != oldWidget.lookerDelegate) {
+       _scope.lookerDelegate = widget.lookerDelegate;
+    }
   }
 
   @override
@@ -152,6 +164,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       _scope = ZefyrScope.editable(
         mode: widget.mode,
         imageDelegate: _imageDelegate,
+        lookerDelegate: widget.lookerDelegate,
         controller: widget.controller,
         focusNode: widget.focusNode,
         focusScope: FocusScope.of(context),

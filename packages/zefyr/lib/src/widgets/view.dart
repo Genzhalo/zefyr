@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/widgets/looker.dart';
 import 'package:zefyr/zefyr.dart';
 import 'image.dart';
 import 'scope.dart';
@@ -14,8 +15,9 @@ import 'theme.dart';
 class ZefyrView extends StatefulWidget {
   final NotusDocument document;
   final ZefyrImageDelegate imageDelegate;
-
-  const ZefyrView({Key key, @required this.document, this.imageDelegate})
+  final ZefyrLookerDelegate lookerDelegate;
+  
+  const ZefyrView({Key key, @required this.document, this.imageDelegate, this.lookerDelegate })
       : super(key: key);
 
   @override
@@ -31,13 +33,14 @@ class ZefyrViewState extends State<ZefyrView> {
   @override
   void initState() {
     super.initState();
-    _scope = ZefyrScope.view(imageDelegate: widget.imageDelegate);
+    _scope = ZefyrScope.view(imageDelegate: widget.imageDelegate, lookerDelegate: widget.lookerDelegate );
   }
 
   @override
   void didUpdateWidget(ZefyrView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _scope.imageDelegate = widget.imageDelegate;
+    _scope.lookerDelegate = widget.lookerDelegate;
   }
 
   @override
