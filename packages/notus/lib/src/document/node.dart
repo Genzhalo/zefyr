@@ -25,7 +25,7 @@ abstract class Node extends LinkedListEntry<Node> {
   ContainerNode _parent;
 
   /// Returns `true` if this node is the first node in the [parent] list.
-  bool get isFirst => list == null || list.first == this;
+  bool get isFirst => list?.first == this;
 
   /// Returns `true` if this node is the last node in the [parent] list.
   bool get isLast => list.last == this;
@@ -44,10 +44,13 @@ abstract class Node extends LinkedListEntry<Node> {
     if (isFirst) return 0;
     int offset = 0;
     Node node = this;
-    do {
-      node = node.previous;
+    while ((node = node.previous) != null && !node.isFirst){
       offset += node.length;
-    } while (!node.isFirst);
+    }
+    // do {
+    //   node = node.previous;
+    //   offset += node.length;
+    // } while (!node.isFirst);
     return offset;
   }
 
