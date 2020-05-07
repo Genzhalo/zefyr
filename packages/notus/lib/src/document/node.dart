@@ -41,7 +41,7 @@ abstract class Node extends LinkedListEntry<Node> {
   ///
   /// To get offset of this node in the document see [documentOffset].
   int get offset {
-    if (isFirst && previous == null) return 0;
+    if (isFirst || previous == null) return 0;
     int offset = 0;
     Node node = this;
     do {
