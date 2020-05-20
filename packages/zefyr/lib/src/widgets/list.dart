@@ -25,17 +25,11 @@ class AlphabetIndent implements IndentInterface {
   List<int> _codes = [ a - 1 ]; 
 
   String get next {
-    for( int index = _codes.length - 1; index >= 0; index-- ) {
-      if ( _codes[index] + 1 > z) {
-        _codes[index] = a;
-        if (index == 0) { 
-          _codes.insert(0, a);
-          break;
-        }
-      } else {
-        _codes[index]++;
-        break;
-      }
+    for(int index = _codes.length - 1; index >= 0; index--) {
+      _codes[index]++;
+      if (_codes[index] <= z) break;
+      _codes[index] = a;
+      if (index == 0) _codes.insert(index, a);
     }
     return String.fromCharCodes(_codes);
   }
