@@ -13,10 +13,14 @@ abstract class IndentInterface {
   String get next;
 }
 
+class BulletIndent implements IndentInterface {
+  String get next => '•';
+}
+
 class NumberIndent implements IndentInterface {
   int _value = 1;
 
-  String get next => (_value++).toString();
+  String get next => (_value++).toString() + ".";
 }
 
 class AlphabetIndent implements IndentInterface {
@@ -31,7 +35,7 @@ class AlphabetIndent implements IndentInterface {
       _codes[index] = a;
       if (index == 0) _codes.insert(index, a);
     }
-    return String.fromCharCodes(_codes);
+    return String.fromCharCodes(_codes) + ".";
   }
 }
 
@@ -73,64 +77,52 @@ class RomanNumberIndent implements IndentInterface {
         nIndex += 1;
       }
     }
-    return curString;
+    return curString + ".";
   }
 }
 
 
-class ListIndents {
-  List<IndentInterface> _indents = [];
+/// Represents number lists and bullet lists in a Zefyr editor.
+class ZefyrList extends StatelessWidget {
 
-  IndentInterface getIndent(int indent) {
-    assert(indent >= 0);
-    if (indent < _indents.length) return _indents[indent];
-    IndentInterface _indent = _newIndent(indent);
-    _indents.add(_indent);
-    return _indent;
-  }
-
-  IndentInterface _newIndent(int indent) {
-    switch((indent + 1) % 3) {
+  static IndentInterface getOrderedIterator(int indent) {
+    switch(indent  % 3) {
       case 1: return NumberIndent();
       case 2: return AlphabetIndent();
       case 0: return RomanNumberIndent();
       default: return NumberIndent();
     }
   }
-}
 
-/// Represents number lists and bullet lists in a Zefyr editor.
-class ZefyrList extends StatelessWidget {
-  const ZefyrList({Key key, @required this.node}) : super(key: key);
+  ZefyrList({Key key, @required this.node }) : super(key: key) {
+    _indentIterator = node.isBullet ? BulletIndent() : getOrderedIterator(node.indent + 1);
+    for(BlockNode block in node.nodesWithTheSameStyle) {
+       block.children.forEach((entry) {_indentIterator.next; });
+    }
+  }
 
   final BlockNode node;
-  
-  bool get isNumberList => node.style.get(NotusAttribute.block) == NotusAttribute.block.numberList;
+  IndentInterface _indentIterator;
 
-  int getItemIndent(LineNode line) => line.style.contains(NotusAttribute.indent) ?
-    line.style.value(NotusAttribute.indent) : 0;
 
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrTheme.of(context);
-    final listIndents = ListIndents();
     List<Widget> items = [];
 
     for (LineNode line in node.children) {
-      final indent = getItemIndent(line);
       items.add(
         Padding(
-          padding: EdgeInsets.only(left: (indent + 1) * theme.indentSize),
+          padding: EdgeInsets.only(left: (node.indent + 1) * theme.indentSize),
           child: ZefyrListItem(
             node: line, 
-            bulletText: isNumberList ? '${listIndents.getIndent(indent).next}.' : '•')
+            bulletText: _indentIterator.next
+          )
         )
       );
     }
-
     return Column(children: items);
   }
-
 }
 
 /// An item in a [ZefyrList].

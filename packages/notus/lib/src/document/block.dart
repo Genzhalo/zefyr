@@ -48,6 +48,23 @@ class BlockNode extends ContainerNode<LineNode>
     optimize();
   }
 
+  bool get isBullet => style.get(NotusAttribute.block) == NotusAttribute.block.bulletList;
+  bool get isNumber => style.get(NotusAttribute.block) == NotusAttribute.block.numberList;
+  bool get isList => isBullet || isNumber;
+
+  int get indent => style.contains(NotusAttribute.indent) ? style.value(NotusAttribute.indent) : 0;
+
+  List<BlockNode> get listNodesWithTheSameStyle {
+    List<BlockNode> list = [];
+    if (!isList || isFirst) return list;
+    var prev = previous;
+    while (prev is BlockNode && prev.isList && prev.indent >= indent ) {
+      if ((prev as BlockNode).style == style) list.insert(0, prev);
+      prev = prev.previous;
+    }
+    return list; 
+  }
+
   @override
   LineNode get defaultChild => LineNode();
 
