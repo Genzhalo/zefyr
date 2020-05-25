@@ -54,7 +54,7 @@ class BlockNode extends ContainerNode<LineNode>
 
   int get indent => style.contains(NotusAttribute.indent) ? style.value(NotusAttribute.indent) : 0;
 
-  List<BlockNode> get listNodesWithTheSameStyle {
+  List<BlockNode> get nodesWithTheSameStyle {
     List<BlockNode> list = [];
     if (!isList || isFirst) return list;
     var prev = previous;

@@ -85,7 +85,7 @@ class RomanNumberIndent implements IndentInterface {
 /// Represents number lists and bullet lists in a Zefyr editor.
 class ZefyrList extends StatelessWidget {
 
-  static IndentInterface getOrderedIterator(int indent) {
+  static IndentInterface getOrderedIndentIterator(int indent) {
     switch(indent  % 3) {
       case 1: return NumberIndent();
       case 2: return AlphabetIndent();
@@ -95,7 +95,7 @@ class ZefyrList extends StatelessWidget {
   }
 
   ZefyrList({Key key, @required this.node }) : super(key: key) {
-    _indentIterator = node.isBullet ? BulletIndent() : getOrderedIterator(node.indent + 1);
+    _indentIterator = node.isBullet ? BulletIndent() : getOrderedIndentIterator(node.indent + 1);
     for(BlockNode block in node.nodesWithTheSameStyle) {
        block.children.forEach((entry) {_indentIterator.next; });
     }
