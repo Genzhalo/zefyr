@@ -15,6 +15,7 @@ abstract class FormatRule {
   Delta apply(Delta document, int index, int length, NotusAttribute attribute);
 }
 
+
 /// Produces Delta with line-level attributes applied strictly to
 /// line-break characters.
 class ResolveLineFormatRule extends FormatRule {
@@ -34,7 +35,7 @@ class ResolveLineFormatRule extends FormatRule {
     while (current < length && iter.hasNext) {
       final op = iter.next(length - current);
       if (op.data.contains('\n')) {
-        final delta = _applyAttribute(op.data, attribute);
+        final delta = _applyAttribute(op.data, _extentIndentAttr(op, attribute));
         result = result.concat(delta);
       } else {
         result.retain(op.length);
@@ -49,18 +50,24 @@ class ResolveLineFormatRule extends FormatRule {
         result..retain(op.length);
         continue;
       }
-      result..retain(lf)..retain(1, attribute.toJson());
+      result..retain(lf)..retain(1, _extentIndentAttr(op, attribute));
       break;
     }
     return result;
   }
 
-  Delta _applyAttribute(String text, NotusAttribute attribute) {
+  Map<String, dynamic> _extentIndentAttr(Operation op, NotusAttribute attribute) {
+    var result = attribute.toJson();
+    if (op.hasAttribute("indent")) result["indent"] = op.attributes["indent"];
+    return result;
+  }
+
+  Delta _applyAttribute(String text, Map<String, dynamic> attr) {
     final result = Delta();
     int offset = 0;
     int lf = text.indexOf('\n');
     while (lf >= 0) {
-      result..retain(lf - offset)..retain(1, attribute.toJson());
+      result..retain(lf - offset)..retain(1, attr);
       offset = lf + 1;
       lf = text.indexOf('\n', offset);
     }
