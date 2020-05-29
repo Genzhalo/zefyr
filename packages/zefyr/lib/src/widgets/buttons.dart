@@ -129,7 +129,7 @@ class ZefyrButton extends StatelessWidget {
   void _indentAttribute(NotusAttribute attribute, ZefyrScope editor, bool increase) {
     NotusStyle selectionStyle = editor.selectionStyle;
     if (selectionStyle.contains(NotusAttribute.block.bulletList) || selectionStyle.contains(NotusAttribute.block.numberList)) {
-      int currentIndent = selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent) : 0;
+      int currentIndent = selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent).value : 0;
       currentIndent = increase ? currentIndent + 1 : currentIndent - 1;
       if (currentIndent < 0 || currentIndent > 2) return;
       editor.formatSelection(currentIndent == 0 ? attribute : attribute.withValue(currentIndent));
