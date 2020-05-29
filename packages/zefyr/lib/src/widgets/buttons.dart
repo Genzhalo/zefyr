@@ -608,7 +608,7 @@ class _IndentButtonState extends State<IndentButton> {
 
   bool get _isEnabled => 
     (selectionStyle.contains(NotusAttribute.block.bulletList) || selectionStyle.contains(NotusAttribute.block.numberList)) &&
-    ( widget.increase ? indentValue <= 2 : indentValue >= 0);
+    ( widget.increase ? indentValue < 2 : indentValue > 0);
   
 
   void onPress(){
