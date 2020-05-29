@@ -328,8 +328,8 @@ class NotusStyle {
   String toString() => "{${_data.values.join(', ')}}";
 }
 
-class _IndentAttributeBuilder extends NotusAttributeBuilder<int> {
-   const _IndentAttributeBuilder() : super._('indent', NotusAttributeScope.line);
+class _IndentAttributeBuilder extends NotusAttribute<int> {
+   const _IndentAttributeBuilder() : super._('indent', NotusAttributeScope.line, null);
 }
 
 /// Applies bold style to a text segment.

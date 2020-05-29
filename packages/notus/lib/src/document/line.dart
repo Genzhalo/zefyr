@@ -47,6 +47,8 @@ class LineNode extends ContainerNode<LeafNode>
     }
   }
 
+  int get indent => style.contains(NotusAttribute.indent) ? style.get(NotusAttribute.indent).value : 0;
+
   /// Creates new empty [LineNode] with the same style.
   LineNode clone() {
     final node = LineNode();
@@ -230,7 +232,11 @@ class LineNode extends ContainerNode<LeafNode>
       assert(
           style.values.every((attr) => attr.scope == NotusAttributeScope.line),
           'It is not allowed to apply inline attributes to line itself.');
-      _formatAndOptimize(style);
+       if (style.keys.length == 1 && style.single.key == NotusAttribute.indent.key) {
+        _formatAndOptimizeIndent(style);
+      } else {
+        _formatAndOptimize(style);
+      }
     } else {
       // otherwise forward to children as it's inline format update.
       assert(index + local != thisLength,
@@ -292,8 +298,8 @@ class LineNode extends ContainerNode<LeafNode>
   /// Formats this line and optimizes layout afterwards.
   void _formatAndOptimize(NotusStyle newStyle) {
     if (newStyle == null || newStyle.isEmpty) return;
-
     applyStyle(newStyle);
+
     if (!newStyle.contains(NotusAttribute.block)) {
       return;
     } // no block-level changes
@@ -335,5 +341,16 @@ class LineNode extends ContainerNode<LeafNode>
       final LookupResult result = lookup(index, inclusive: true);
       result.node.insert(result.offset, text, style);
     }
+  }
+
+
+  void _formatAndOptimizeIndent(NotusStyle newStyle) {
+    if (newStyle.single.value == indent || !(parent is BlockNode)) return; 
+    final block = (parent as BlockNode).clone();
+    applyStyle(newStyle);
+    unwrap();
+    wrap(block);
+    block.applyAttribute(newStyle.single);
+    block.optimize();
   }
 }

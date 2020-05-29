@@ -36,7 +36,9 @@ enum ZefyrToolbarAction {
   close,
   confirm,
   mention,
-  custom
+  custom,
+  indentIncrease,
+  indentDecrease
 }
 
 final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
@@ -347,6 +349,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
     ZefyrToolbarAction.hideKeyboard: Icons.keyboard_hide,
     ZefyrToolbarAction.close: Icons.close,
     ZefyrToolbarAction.confirm: Icons.check,
+    
   };
 
   static const kSpecialIconSizes = {
@@ -395,7 +398,4 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
 
   @override
   Widget get trailing => null;
-
-
-
 }
