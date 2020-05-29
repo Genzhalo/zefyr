@@ -36,7 +36,9 @@ enum ZefyrToolbarAction {
   close,
   confirm,
   mention,
-  custom
+  custom,
+  indentIncrease,
+  indentDecrease
 }
 
 final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
@@ -54,6 +56,8 @@ final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
   ZefyrToolbarAction.code: NotusAttribute.block.code,
   ZefyrToolbarAction.quote: NotusAttribute.block.quote,
   ZefyrToolbarAction.horizontalRule: NotusAttribute.embed.horizontalRule,
+  ZefyrToolbarAction.indentIncrease: NotusAttribute.indent,
+  ZefyrToolbarAction.indentDecrease: NotusAttribute.indent
 };
 
 /// Allows customizing appearance of [ZefyrToolbar].
@@ -395,7 +399,4 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
 
   @override
   Widget get trailing => null;
-
-
-
 }

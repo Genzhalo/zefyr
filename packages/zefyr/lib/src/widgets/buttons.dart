@@ -104,14 +104,18 @@ class ZefyrButton extends StatelessWidget {
     return null;
   }
 
-  VoidCallback _getPressedHandler(
-      ZefyrScope editor, ZefyrToolbarState toolbar) {
+  VoidCallback _getPressedHandler(ZefyrScope editor, ZefyrToolbarState toolbar) {
     if (onPressed != null) {
       return onPressed;
     } else if (isAttributeAction) {
       final attribute = kZefyrToolbarAttributeActions[action];
+     
       if (attribute is NotusAttribute) {
-        return () => _toggleAttribute(attribute, editor);
+        switch(action) {
+          case ZefyrToolbarAction.indentDecrease: return () => _indentAttribute(attribute, editor, false);
+          case ZefyrToolbarAction.indentIncrease: return () => _indentAttribute(attribute, editor, true);
+          default: return () => _toggleAttribute(attribute, editor);
+        }     
       }
     } else if (action == ZefyrToolbarAction.close) {
       return () => toolbar.closeOverlay();
@@ -120,6 +124,16 @@ class ZefyrButton extends StatelessWidget {
     }
 
     return null;
+  }
+
+  void _indentAttribute(NotusAttribute attribute, ZefyrScope editor, bool increase) {
+    NotusStyle selectionStyle = editor.selectionStyle;
+    if (selectionStyle.contains(NotusAttribute.block.bulletList) || selectionStyle.contains(NotusAttribute.block.numberList)) {
+      int currentIndent = selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent) : 0;
+      currentIndent = increase ? currentIndent + 1 : currentIndent - 1;
+      if (currentIndent < 0 || currentIndent > 2) return;
+      editor.formatSelection(attribute.withValue(currentIndent));
+    }
   }
 
   void _toggleAttribute(NotusAttribute attribute, ZefyrScope editor) {
