@@ -56,8 +56,6 @@ final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
   ZefyrToolbarAction.code: NotusAttribute.block.code,
   ZefyrToolbarAction.quote: NotusAttribute.block.quote,
   ZefyrToolbarAction.horizontalRule: NotusAttribute.embed.horizontalRule,
-  ZefyrToolbarAction.indentIncrease: NotusAttribute.indent,
-  ZefyrToolbarAction.indentDecrease: NotusAttribute.indent
 };
 
 /// Allows customizing appearance of [ZefyrToolbar].
@@ -351,6 +349,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
     ZefyrToolbarAction.hideKeyboard: Icons.keyboard_hide,
     ZefyrToolbarAction.close: Icons.close,
     ZefyrToolbarAction.confirm: Icons.check,
+    
   };
 
   static const kSpecialIconSizes = {

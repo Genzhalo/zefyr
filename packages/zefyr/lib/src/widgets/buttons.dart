@@ -109,13 +109,8 @@ class ZefyrButton extends StatelessWidget {
       return onPressed;
     } else if (isAttributeAction) {
       final attribute = kZefyrToolbarAttributeActions[action];
-     
       if (attribute is NotusAttribute) {
-        switch(action) {
-          case ZefyrToolbarAction.indentDecrease: return () => _indentAttribute(attribute, editor, false);
-          case ZefyrToolbarAction.indentIncrease: return () => _indentAttribute(attribute, editor, true);
-          default: return () => _toggleAttribute(attribute, editor);
-        }     
+        return () => _toggleAttribute(attribute, editor); 
       }
     } else if (action == ZefyrToolbarAction.close) {
       return () => toolbar.closeOverlay();
@@ -124,16 +119,6 @@ class ZefyrButton extends StatelessWidget {
     }
 
     return null;
-  }
-
-  void _indentAttribute(NotusAttribute attribute, ZefyrScope editor, bool increase) {
-    NotusStyle selectionStyle = editor.selectionStyle;
-    if (selectionStyle.contains(NotusAttribute.block.bulletList) || selectionStyle.contains(NotusAttribute.block.numberList)) {
-      int currentIndent = selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent).value : 0;
-      currentIndent = increase ? currentIndent + 1 : currentIndent - 1;
-      if (currentIndent < 0 || currentIndent > 2) return;
-      editor.formatSelection(currentIndent == 0 ? attribute : attribute.withValue(currentIndent));
-    }
   }
 
   void _toggleAttribute(NotusAttribute attribute, ZefyrScope editor) {
@@ -598,4 +583,47 @@ class _LinkView extends StatelessWidget {
     }
     return widget;
   }
+}
+
+class IndentButton extends StatefulWidget {
+  final bool increase;
+  IndentButton({ this.increase = false });
+
+  @override
+  State<StatefulWidget> createState() => _IndentButtonState();
+
+}
+
+class _IndentButtonState extends State<IndentButton> {
+
+  int get indentValue => selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent).value : 0;
+
+  NotusAttribute<int> get attribute {
+    int _currentIndent = widget.increase ? indentValue + 1 : indentValue - 1;;
+    if (_currentIndent > 2) return null;
+    return _currentIndent == 0 ? NotusAttribute.indent : NotusAttribute.indent.withValue(_currentIndent);
+  }
+
+  NotusStyle get selectionStyle => ZefyrToolbar.of(context).editor.selectionStyle;
+
+  bool get _isEnabled => 
+    (selectionStyle.contains(NotusAttribute.block.bulletList) || selectionStyle.contains(NotusAttribute.block.numberList)) &&
+    ( widget.increase ? indentValue <= 2 : indentValue >= 0);
+  
+
+  void onPress(){
+    ZefyrToolbar.of(context).editor.formatSelection(attribute);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final toolbar = ZefyrToolbar.of(context);
+
+    return toolbar.buildButton(
+      context,
+      widget.increase ? ZefyrToolbarAction.indentIncrease : ZefyrToolbarAction.indentDecrease,
+      onPressed: _isEnabled ? onPress : null,
+    );
+  }
+  
 }
