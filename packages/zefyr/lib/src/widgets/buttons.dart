@@ -76,7 +76,7 @@ class ZefyrButton extends StatelessWidget {
         action: action,
         icon: _icon,
         size: _iconSize,
-        // iconColor: iconColor,
+        iconColor: iconColor,
         color: _getColor(editor, toolbarTheme),
         onPressed: _getPressedHandler(editor, toolbar),
       );
