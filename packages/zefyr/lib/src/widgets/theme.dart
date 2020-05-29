@@ -298,7 +298,7 @@ class ZefyrToolbarTheme {
       color: theme.primaryColorLight,
       toggleColor: theme.primaryColor,
       iconColor: theme.primaryIconTheme.color,
-      disabledIconColor: Colors.grey.shade300,
+      disabledIconColor: Colors.grey.withOpacity(0.2)
     );
   }
 
