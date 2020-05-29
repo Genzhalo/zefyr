@@ -132,7 +132,7 @@ class ZefyrButton extends StatelessWidget {
       int currentIndent = selectionStyle.contains(NotusAttribute.indent) ? selectionStyle.get(NotusAttribute.indent) : 0;
       currentIndent = increase ? currentIndent + 1 : currentIndent - 1;
       if (currentIndent < 0 || currentIndent > 2) return;
-      editor.formatSelection(attribute.withValue(currentIndent));
+      editor.formatSelection(currentIndent == 0 ? attribute : attribute.withValue(currentIndent));
     }
   }
 
