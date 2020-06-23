@@ -1,7 +1,6 @@
 // Copyright (c) 2018, the Zefyr project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
@@ -59,7 +58,7 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
       assert(widget.style != null);
       content = ZefyrRichText(
         node: widget.node,
-        text: buildText(context),
+        text: buildText(context, scope),
       );
     }
 
@@ -111,15 +110,15 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
     }
   }
 
-  TextSpan buildText(BuildContext context) {
+  TextSpan buildText(BuildContext context, ZefyrScope scope) {
     final theme = ZefyrTheme.of(context);
     final List<TextSpan> children = widget.node.children
-        .map((node) => _segmentToTextSpan(node, theme))
+        .map((node) => _segmentToTextSpan(node, theme, scope))
         .toList(growable: false);
     return TextSpan(style: widget.style, children: children);
   }
 
-  TextSpan _segmentToTextSpan(Node node, ZefyrThemeData theme) {
+  TextSpan _segmentToTextSpan(Node node, ZefyrThemeData theme, ZefyrScope scope) {
     final TextNode segment = node;
     final attrs = segment.style;
 
@@ -127,7 +126,8 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
       return LinkTextSpan(
         text: segment.value,
         style: _getTextStyle(attrs, theme),
-        link: attrs.value(NotusAttribute.link)
+        link: attrs.value(NotusAttribute.link),
+        isEnabled: !scope.mode.canEdit
       );
     }
 
@@ -186,9 +186,14 @@ class MentionTextSpan extends TextSpan {
 
 class LinkTextSpan extends TextSpan {
   final String link;
-  LinkTextSpan({ String text, TextStyle style, this.link }) : super(text: text, style: style);
+  final bool isEnabled;
+  LinkTextSpan({ String text, TextStyle style, this.link, this.isEnabled = false }) : super(text: text, style: style);
 
   void onTap() async {
-    if (await canLaunch(link)) await launch(link);
+    if (isEnabled) { 
+      if (await canLaunch(link)) {
+        await launch(link);
+      }
+    }
   }
 }
