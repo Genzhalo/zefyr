@@ -247,8 +247,9 @@ class _ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
       box = _scope.renderContext.closestBoxForGlobalPoint(globalPoint);
     }
     if (box == null) return null;
-
+  
     final localPoint = box.globalToLocal(globalPoint);
+    box.onTapHandle(localPoint);
     final position = box.getPositionForOffset(localPoint);
     final selection = TextSelection.collapsed(
       offset: position.offset,
@@ -412,7 +413,7 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     );
 
     final Offset handleAnchor =
-        widget.selectionOverlay.controls.getHandleAnchor(
+      widget.selectionOverlay.controls.getHandleAnchor(
       type,
       block.preferredLineHeight,
     );
@@ -443,27 +444,25 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
       link: block.layerLink,
       offset: interactiveRect.topLeft,
       showWhenUnlinked: false,
-      child: Container(
-        alignment: Alignment.topLeft,
-        width: interactiveRect.width,
-        height: interactiveRect.height,
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          dragStartBehavior: DragStartBehavior.start,
-          onPanStart: _handleDragStart,
-          onPanUpdate: _handleDragUpdate,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: padding.left,
-              top: padding.top,
-              right: padding.right,
-              bottom: padding.bottom,
-            ),
-            child: widget.selectionOverlay.controls.buildHandle(
-              context,
-              type,
-              block.preferredLineHeight,
-            ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        dragStartBehavior: DragStartBehavior.start,
+        onPanStart: _handleDragStart,
+        onPanUpdate: _handleDragUpdate,
+        child: Container(
+          alignment: Alignment.topLeft,
+          width: interactiveRect.width,
+          height: interactiveRect.height,
+          padding: EdgeInsets.only(
+            left: padding.left,
+            top: padding.top,
+            right: padding.right,
+            bottom: padding.bottom,
+          ),
+          child: widget.selectionOverlay.controls.buildHandle(
+            context,
+            type,
+            block.preferredLineHeight,
           ),
         ),
       ),

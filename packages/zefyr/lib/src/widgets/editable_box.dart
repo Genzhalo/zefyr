@@ -232,6 +232,10 @@ class RenderEditableProxyBox extends RenderBox
     _cursorPainter.paint(context.canvas, caretOffset + offset);
   }
 
+  void onTapHandle(Offset offset) {
+    child.onTapHandle(offset);
+  }
+
   @override
   bool hitTestSelf(Offset position) => true;
 
@@ -298,6 +302,7 @@ abstract class RenderEditableBox extends RenderBox {
   TextPosition getPositionForOffset(Offset offset);
   List<ui.TextBox> getEndpointsForSelection(TextSelection selection);
 
+  void onTapHandle(Offset offset);
   /// Returns the text range of the word at the given offset. Characters not
   /// part of a word, such as spaces, symbols, and punctuation, have word breaks
   /// on both sides. In such cases, this method will return a text range that

@@ -124,16 +124,10 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
     final attrs = segment.style;
 
     if (attrs.contains(NotusAttribute.link)) {
-      return TextSpan(
+      return LinkTextSpan(
         text: segment.value,
         style: _getTextStyle(attrs, theme),
-        recognizer: TapGestureRecognizer()..onTap = () async {
-          var link = attrs.value(NotusAttribute.link);
-          assert(link != null);
-          if (await canLaunch(link)) {
-            await launch(link);
-          }
-        }
+        link: attrs.value(NotusAttribute.link)
       );
     }
 
@@ -188,4 +182,13 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
 
 class MentionTextSpan extends TextSpan {
   MentionTextSpan({ String text, TextStyle style }) : super(text: text, style: style);
+}
+
+class LinkTextSpan extends TextSpan {
+  final String link;
+  LinkTextSpan({ String text, TextStyle style, this.link }) : super(text: text, style: style);
+
+  void onTap() async {
+    if (await canLaunch(link)) await launch(link);
+  }
 }

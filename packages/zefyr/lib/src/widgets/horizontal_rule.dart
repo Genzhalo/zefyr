@@ -118,4 +118,9 @@ class RenderHorizontalRule extends RenderEditableBox {
     final start = _node.documentOffset;
     return TextRange(start: start, end: start + 1);
   }
+
+  @override
+  void onTapHandle(ui.Offset offset) {
+    // TODO: implement onTapHandle
+  }
 }

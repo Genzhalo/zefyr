@@ -231,4 +231,9 @@ class RenderEditableImage extends RenderBox
       performResize();
     }
   }
+
+  @override
+  void onTapHandle(ui.Offset offset) {
+    // TODO: implement onTapHandle
+  }
 }

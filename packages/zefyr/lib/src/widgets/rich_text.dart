@@ -74,6 +74,13 @@ class RenderZefyrParagraph extends RenderParagraph
     _node = value;
   }
 
+  @override 
+  void onTapHandle(Offset offset) {
+    final position = super.getPositionForOffset(offset);
+    final span = text.getSpanForPosition(position);
+    if (span is LinkTextSpan) span.onTap();
+  }
+
   @override
   double get preferredLineHeight => _prototypePainter.height;
 
@@ -239,8 +246,7 @@ class RenderZefyrParagraph extends RenderParagraph
     return null;
   }
 
-  int getMentionDislocation(TextPosition position){
-
+  int getMentionDislocation(TextPosition position) {
     final range = getMentionRange(position.offset);
     if (range != null) return getDislocation(range, position.offset);
     return 0;
