@@ -229,7 +229,7 @@ class AutoFormatLinksRule extends InsertRule {
 
   bool isLink(String text) => RegExp("^$webUrlPattern\$", caseSensitive: false).hasMatch(text);
 
-  Map<String, dynamic> getAttr(text) => NotusAttribute.link.fromString(text).toJson();
+  Map<String, dynamic> getAttr(text) => NotusAttribute.link.fromString(text.toLowerCase()).toJson();
 }
 /// Forces text inserted on the same line with an embed (before or after it)
 /// to be moved to a new line adjacent to the original line.
