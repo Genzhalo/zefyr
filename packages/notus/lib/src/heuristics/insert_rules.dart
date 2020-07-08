@@ -223,7 +223,7 @@ class AutoFormatLinksRule extends InsertRule {
   
     return Delta()
       ..retain(index - candidate.length)
-      ..retain(candidate.length, attributes..addAll(getAttr(candidate)))
+      ..retain(candidate.length, attributes..addAll(getAttr(url)))
       ..insert(text, textAttr);
   }
 
