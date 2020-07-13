@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:notus/src/link_pattern.dart';
+import 'package:notus/src/link_rules.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:notus/notus.dart';
 
@@ -197,39 +197,8 @@ class AutoFormatLinksRule extends InsertRule {
 
   @override
   Delta apply(Delta document, int index, String text) {
-    // This rule applies to a space inserted after a link, so we can ignore
-    // everything else.
-
-    // if paste text is link
-    if (isLink(text)){
-      return Delta()
-        ..retain(index)
-        ..insert(text, getAttr(text.trim()));
-    }
-    DeltaIterator iter = DeltaIterator(document);
-    final previous = iter.skip(index);
-    if (previous == null) return null;
-    final candidate = previous.data.split('\n').last.split(' ').last;
-
-    final url = text == ' ' ? candidate : candidate + text;
-    if (!isLink(url)) return null;
-
-    final attributes = previous.attributes ?? <String, dynamic>{};
-    var textAttr = attributes;
-    if (text == ' ') {
-      textAttr.remove("link");
-      if (textAttr.isEmpty) textAttr = null;
-    }
-  
-    return Delta()
-      ..retain(index - candidate.length)
-      ..retain(candidate.length, attributes..addAll(getAttr(url)))
-      ..insert(text, textAttr);
+    return LinkRules().insert(document, index, text);
   }
-
-  bool isLink(String text) => RegExp("^$webUrlPattern\$", caseSensitive: false).hasMatch(text);
-
-  Map<String, dynamic> getAttr(text) => NotusAttribute.link.fromString(text.toLowerCase()).toJson();
 }
 /// Forces text inserted on the same line with an embed (before or after it)
 /// to be moved to a new line adjacent to the original line.

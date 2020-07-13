@@ -34,6 +34,7 @@ class NotusHeuristics {
       CatchAllInsertRule(),
     ],
     deleteRules: [
+      AutoLinkRule(),
       EnsureMentionLineRule(),
       EnsureEmbedLineRule(),
       PreserveLineStyleOnMergeRule(),
