@@ -107,12 +107,7 @@ class LinkRules {
     final previous = iter.skip(index);
     if (previous == null) return null;
     final next = iter.next();
-    // edit link
-    // 1. next is avavilbe
-    // 2. next is link
-    // 3. next has the same attributes that prev
-    // 4. delete count less that next link 
-    if (next != null && length < next.data.length){
+    if (next != null && length <= next.data.length){
       final nextData = next.data.substring(length).trim();
       final url = previous.data + nextData;
       if (_isLink(url, asPart: false)) {
