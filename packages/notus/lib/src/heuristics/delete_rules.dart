@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:notus/src/link_rules.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:notus/notus.dart';
 
@@ -149,3 +150,14 @@ class EnsureMentionLineRule extends DeleteRule {
   }
 }
 
+
+class AutoLinkRule extends DeleteRule {
+  const AutoLinkRule();
+
+  @override
+  Delta apply(Delta document, int index, int length) {
+    return LinkRules().delete(document, index, length);
+  }
+
+  
+}
