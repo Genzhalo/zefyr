@@ -45,6 +45,32 @@ void main() {
       );
     });
 
+    test('type continue invalid link ', () {
+      final url = 'https://devs.staging';
+      final part = '.c';
+      final doc = Delta()..insert(url, NotusAttribute.link.fromString(url).toJson())..insert('\n');
+      final attr = NotusAttribute.link.fromString(url).toJson();
+      expect(
+        LinkRules().insert(doc, url.length, part),
+        Delta()
+          ..retain(url.length)
+          ..insert(part, attr)
+      );   
+    });
+
+    test('type continue correct link ', () {
+      final url = 'https://devs.staging';
+      final part = '.com';
+      final doc = Delta()..insert(url, NotusAttribute.link.fromString(url).toJson())..insert('\n');
+      final attr = NotusAttribute.link.fromString(url+part).toJson();
+      expect(
+        LinkRules().insert(doc, url.length, part),
+        Delta()
+          ..retain(url.length, attr)
+          ..insert(part, attr)
+      );   
+    });
+
     test('correct link', () {
       final firstPart = 'https';
       final secondtPart = '//google.com';

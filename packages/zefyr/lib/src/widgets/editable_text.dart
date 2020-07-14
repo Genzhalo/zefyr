@@ -159,7 +159,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     _focusNode = widget.focusNode;
     super.initState();
     _focusAttachment = _focusNode.attach(context);
-    _input = InputConnectionController(_handleRemoteValueChange, Theme.of(context).brightness);
+    
+    _input = InputConnectionController(_handleRemoteValueChange, context);
     _updateSubscriptions();
   }
 

@@ -58,9 +58,9 @@ class LinkRules {
 
     final next = iter.next();
     var candidate = prev.data.split('\n').last.split(' ').last;
+
     var nextFirstWord = '';
     if (next != null) nextFirstWord = next.data.split('\n').first.split(' ').first;
-
     final url = candidate + text + nextFirstWord;
 
     if (_isLink(url, asPart: false)) {
@@ -72,21 +72,33 @@ class LinkRules {
         ..retain(nextFirstWord.length, attr);
     }
 
-    if (_hasLink(prev) && _hasLink(prev)) {
+    if (_hasLink(prev) && _hasLink(next) ) {
       return Delta()
         ..retain(index)
         ..insert(text, prev.attributes);
     }
 
-    if (text == ' ' && !_hasLink(prev)) {
-      if (_isLink(candidate, asPart: false)){
-        final attr = (prev.attributes ?? {})..addAll(_getAttr(candidate));
+    if (text == ' ') {
+      final attr = (prev.attributes ?? {})..remove(NotusAttribute.link.key);
+      final textAttr = attr.isEmpty ? null : attr;
+      if (_isLink(candidate, asPart: false)) {
         return Delta()
           ..retain(index - candidate.length)
-          ..retain(candidate.length, attr)
-          ..insert(text, prev.attributes == null || prev.attributes.isEmpty ? null : prev.attributes);
+          ..retain(candidate.length, attr..addAll(_getAttr(candidate)))
+          ..insert(text, textAttr);
+      } else {
+        return Delta()
+          ..retain(index)
+          ..insert(text, textAttr);
       }
     }
+
+    if (_hasLink(prev) ){
+      return Delta()
+        ..retain(index)
+        ..insert(text, prev.attributes);
+    } 
+
     return null;
   }
 

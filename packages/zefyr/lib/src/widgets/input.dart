@@ -10,14 +10,14 @@ typedef RemoteValueChanged = Function(
     int start, String deleted, String inserted, TextSelection selection);
 
 class InputConnectionController implements TextInputClient {
-  InputConnectionController(this.onValueChanged, this.keyboardAppearance)
+  InputConnectionController(this.onValueChanged, this.context)
       : assert(onValueChanged != null);
 
   //
   // public members
   //
 
-  final Brightness keyboardAppearance;
+  final BuildContext context;
 
   final RemoteValueChanged onValueChanged;
 
@@ -46,7 +46,7 @@ class InputConnectionController implements TextInputClient {
           autocorrect: true,
           inputAction: TextInputAction.newline,
           textCapitalization: TextCapitalization.sentences,
-          keyboardAppearance: keyboardAppearance
+          keyboardAppearance: Theme.of(context).brightness
         ),
       )..setEditingState(value);
       _sentRemoteValues.add(value);
