@@ -137,6 +137,8 @@ class LinkRules {
     return RegExp(source, caseSensitive: false).hasMatch(text);
   }
 
-  Map<String, dynamic> _getAttr(text) => NotusAttribute.link.fromString(text.toLowerCase()).toJson();
-
+  Map<String, dynamic> _getAttr(String text) {
+    if (text.startsWith('//')) text = 'https:' + text;
+    return NotusAttribute.link.fromString(text.toLowerCase()).toJson();
+  } 
 }
