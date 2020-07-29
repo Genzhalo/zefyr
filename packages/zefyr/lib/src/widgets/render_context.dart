@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'editable_box.dart';
+import 'dart:math' as math;
 
 /// Registry of all [RenderEditableProxyBox]es inside a [ZefyrEditableText].
 ///
@@ -73,6 +74,23 @@ class ZefyrRenderContext extends ChangeNotifier {
       _activeBoxes.add(box);
     }
     notifyListeners();
+  }
+
+  Rect getGlobalRect(){
+    double left = double.infinity;
+    double top = double.infinity;
+    double bottom = 0;
+    double right = 0;
+
+    for (var box in _activeBoxes) {
+      final offset = box.localToGlobal(Offset.zero);
+      top = math.min(offset.dy, top);
+      left = math.min(offset.dx, left);
+      if (offset.dy >= bottom) bottom = offset.dy + box.size.height;
+      right = box.size.width + left;
+    }
+
+    return Rect.fromLTRB(left, top, right, bottom);
   }
 
   /// Returns box containing character at specified document [offset].

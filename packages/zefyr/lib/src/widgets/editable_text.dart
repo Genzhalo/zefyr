@@ -3,9 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 
+import 'caret.dart';
 import 'controller.dart';
 import 'cursor_timer.dart';
 import 'editor.dart';
@@ -17,7 +19,7 @@ import 'render_document.dart';
 import 'scope.dart';
 import 'selection.dart';
 import 'theme.dart';
-
+import 'dart:math' as math;
 /// Core widget responsible for editing Zefyr documents.
 ///
 /// Depends on presence of [ZefyrTheme] and [ZefyrScope] somewhere up the
@@ -90,7 +92,6 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
 
   /// Current text selection.
   TextSelection get selection => widget.controller.selection;
-
   FocusNode _focusNode;
   FocusAttachment _focusAttachment;
 
@@ -132,6 +133,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   // Overridden members of State
   //
 
+
   @override
   Widget build(BuildContext context) {
     _focusAttachment.reparent();
@@ -140,27 +142,29 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     final body = SingleChildScrollView(
       physics: widget.physics,
       controller: _scrollController,
-      child: Padding(
+      child: Container(
         padding: widget.padding ?? EdgeInsets.zero,
         child: RenderZefyrDocument(document: document, firstChild: widget.firstChild),
       ),
     );
-
-    return Stack(children: [
-      body,
-      Positioned(top: 0, left: 0, right: 0, bottom: 0, child: ZefyrSelectionOverlay(
-        controls: widget.selectionControls ?? defaultSelectionControls(context),
-      ))
+   
+    return Stack(
+      children: [
+        body,
+        Positioned(top: 0, left: 0, right: 0, bottom: 0, child: ZefyrSelectionOverlay(
+          controls: widget.selectionControls ?? defaultSelectionControls(context),
+        )
+      )
     ]);
   }
+
 
   @override
   void initState() {
     _focusNode = widget.focusNode;
     super.initState();
     _focusAttachment = _focusNode.attach(context);
-    
-    _input = InputConnectionController(_handleRemoteValueChange, context);
+    _input = InputConnectionController(_handleRemoteValueChange, context, _updateFloatinCursor);
     _updateSubscriptions();
   }
 
@@ -271,9 +275,113 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
         .replaceText(start, deleted.length, inserted, selection: selection);
   }
 
+
+  Offset _startFloaingGlobalOffset;
+  Rect _rectOfEditorContext = Rect.zero;
+
+  void _updateFloatinCursor(RawFloatingCursorPoint point){
+    switch(point.state){
+      case FloatingCursorDragState.Start:
+        final paragraph = _renderContext.boxForTextOffset(selection.baseOffset);
+        if (paragraph != null) {
+          final offsetOfCaret = paragraph.getOffsetForCaret(
+            TextPosition(offset: selection.baseOffset, affinity: selection.affinity),
+            CursorPainter.buildPrototype(2)
+          );
+          _startFloaingGlobalOffset = paragraph.localToGlobal(offsetOfCaret);
+        }
+        _rectOfEditorContext = _renderContext.getGlobalRect();
+        break;
+      case FloatingCursorDragState.Update:
+        final newOffset = _calculateBoundedFloatingCursorOffset(_startFloaingGlobalOffset + point.offset);
+        final paragraph = _renderContext.boxForGlobalPoint(newOffset);
+        if (paragraph != null) {
+          final newSelection = paragraph.getPositionForOffset(paragraph.globalToLocal(newOffset));
+          if (newSelection.offset != selection.baseOffset){
+            widget.controller.updateSelection(
+              TextSelection(
+                baseOffset: newSelection.offset, 
+                extentOffset: newSelection.offset), 
+              source: ChangeSource.local
+            );         
+          }
+        } 
+        break;
+      case FloatingCursorDragState.End:
+        _startFloaingGlobalOffset = null;
+        _previousOffset = null;
+        _rectOfEditorContext = Rect.zero;
+        _resetOriginOnLeft = false;
+        _resetOriginOnRight = false;
+        _resetOriginOnTop = false;
+        _resetOriginOnBottom = false;
+        _relativeOrigin = Offset(0, 0);
+        break;
+    }
+  }
+
   void _handleRenderContextChange() {
     setState(() {
       // nothing to update internally.
     });
   }
+
+  // The relative origin in relation to the distance the user has theoretically
+  // dragged the floating cursor offscreen. This value is used to account for the
+  // difference in the rendering position and the raw offset value.
+  Offset _relativeOrigin = const Offset(0, 0);
+  Offset _previousOffset;
+  bool _resetOriginOnLeft = false;
+  bool _resetOriginOnRight = false;
+  bool _resetOriginOnTop = false;
+  bool _resetOriginOnBottom = false;
+  double _resetFloatingCursorAnimationValue;  
+
+  Offset _calculateBoundedFloatingCursorOffset(Offset rawCursorOffset) {
+    Offset deltaPosition = const Offset(0, 0);
+    final double topBound = _rectOfEditorContext.top;
+    final double bottomBound = _rectOfEditorContext.bottom;
+    final double leftBound = _rectOfEditorContext.left;
+    final double rightBound = _rectOfEditorContext.right;
+
+    if (_previousOffset != null)
+      deltaPosition = rawCursorOffset - _previousOffset;
+
+    // If the raw cursor offset has gone off an edge, we want to reset the relative
+    // origin of the dragging when the user drags back into the field.
+    if (_resetOriginOnLeft && deltaPosition.dx > 0) {
+      _relativeOrigin = Offset(rawCursorOffset.dx - leftBound, _relativeOrigin.dy);
+      _resetOriginOnLeft = false;
+    } else if (_resetOriginOnRight && deltaPosition.dx < 0) {
+      _relativeOrigin = Offset(rawCursorOffset.dx - rightBound, _relativeOrigin.dy);
+      _resetOriginOnRight = false;
+    }
+    if (_resetOriginOnTop && deltaPosition.dy > 0) {
+      _relativeOrigin = Offset(_relativeOrigin.dx, rawCursorOffset.dy - topBound);
+      _resetOriginOnTop = false;
+    } else if (_resetOriginOnBottom && deltaPosition.dy < 0) {
+      _relativeOrigin = Offset(_relativeOrigin.dx, rawCursorOffset.dy - bottomBound);
+      _resetOriginOnBottom = false;
+    }
+
+    final double currentX = rawCursorOffset.dx - _relativeOrigin.dx;
+    final double currentY = rawCursorOffset.dy - _relativeOrigin.dy;
+    final double adjustedX = math.min(math.max(currentX, leftBound), rightBound);
+    final double adjustedY = math.min(math.max(currentY, topBound), bottomBound);
+    final Offset adjustedOffset = Offset(adjustedX, adjustedY);
+
+    if (currentX < leftBound && deltaPosition.dx < 0)
+      _resetOriginOnLeft = true;
+    else if (currentX > rightBound && deltaPosition.dx > 0)
+      _resetOriginOnRight = true;
+    if (currentY < topBound && deltaPosition.dy < 0)
+      _resetOriginOnTop = true;
+    else if (currentY > bottomBound && deltaPosition.dy > 0)
+      _resetOriginOnBottom = true;
+
+    _previousOffset = rawCursorOffset;
+
+    return adjustedOffset;
+  }
+
 }

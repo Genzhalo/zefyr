@@ -9,14 +9,20 @@ import 'package:zefyr/util.dart';
 typedef RemoteValueChanged = Function(
     int start, String deleted, String inserted, TextSelection selection);
 
+typedef UpdateFloatinCursor = Function(RawFloatingCursorPoint point);
+
 class InputConnectionController implements TextInputClient {
-  InputConnectionController(this.onValueChanged, this.context)
-      : assert(onValueChanged != null);
+  InputConnectionController(
+    this.onValueChanged, 
+    this.context,
+    this.onUpdateCursor
+  );
 
   //
   // public members
   //
 
+  final UpdateFloatinCursor onUpdateCursor;
   final BuildContext context;
 
   final RemoteValueChanged onValueChanged;
@@ -174,7 +180,7 @@ class InputConnectionController implements TextInputClient {
 
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
-    // TODO: implement updateFloatingCursor
+    this.onUpdateCursor(point);
   }
 
   @override
