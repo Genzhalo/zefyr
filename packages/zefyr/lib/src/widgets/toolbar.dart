@@ -223,8 +223,11 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     super.dispose();
   }
 
+  bool get canShowToolbar => !editor.selectionStyle.contains(NotusAttribute.title);
+  
   @override
   Widget build(BuildContext context) {
+    if (!canShowToolbar) return Container();
     final layers = <Widget>[];
 
     // Must set unique key for the toolbar to prevent it from reconstructing

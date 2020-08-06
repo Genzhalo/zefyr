@@ -66,3 +66,21 @@ class ZefyrHeading extends StatelessWidget {
     throw UnimplementedError('Unsupported heading style $style');
   }
 }
+
+
+
+class ZefyrTitle extends StatelessWidget {
+  ZefyrTitle({Key key, @required this.node});
+  
+  final LineNode node;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ZefyrTheme.of(context); 
+    return RawZefyrLine(
+      node: node,
+      style: theme.paragraphTheme.textStyle.merge(theme.boldStyle),
+      padding: theme.paragraphTheme.padding,
+    );
+  }
+}

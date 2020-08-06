@@ -36,14 +36,11 @@ class ZefyrEditableText extends StatefulWidget {
     this.mode = ZefyrMode.edit,
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.physics,
-    this.firstChild
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
         super(key: key);
-
-
-  final Widget firstChild;      
+ 
 
   /// Controls the document being edited.
   final ZefyrController controller;
@@ -142,7 +139,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
       controller: _scrollController,
       child: Padding(
         padding: widget.padding ?? EdgeInsets.zero,
-        child: RenderZefyrDocument(document: document, firstChild: widget.firstChild),
+        child: RenderZefyrDocument(document: document),
       ),
     );
 

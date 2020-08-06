@@ -29,13 +29,10 @@ class ZefyrEditor extends StatefulWidget {
     this.lookerDelegate,
     this.selectionControls,
     this.physics,
-    this.firstChild
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
-        super(key: key);
-
-  final Widget firstChild;      
+        super(key: key);   
 
   /// Controls the document being edited.
   final ZefyrController controller;
@@ -203,7 +200,6 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       mode: widget.mode,
       padding: widget.padding,
       physics: widget.physics,
-      firstChild: widget.firstChild,
     );
 
     return ZefyrTheme(

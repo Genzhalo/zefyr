@@ -81,7 +81,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.block.key: NotusAttribute.block,
     NotusAttribute.embed.key: NotusAttribute.embed,
-    NotusAttribute.indent.key: NotusAttribute.indent
+    NotusAttribute.indent.key: NotusAttribute.indent,
+    NotusAttribute.title.key: NotusAttribute.title
   };
 
   // Inline attributes
@@ -98,6 +99,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Link style attribute.
   // ignore: const_eval_throws_exception
   static const link = LinkAttributeBuilder._();
+
+  static const title = _TitleAttribute._();
 
   static const mention = _MentionAttributeBuilder._();
   // Line attributes
@@ -326,6 +329,10 @@ class NotusStyle {
 
   @override
   String toString() => "{${_data.values.join(', ')}}";
+}
+
+class _TitleAttribute extends NotusAttribute<bool> {
+  const _TitleAttribute._() : super._('title', NotusAttributeScope.line, true);
 }
 
 class _IndentAttributeBuilder extends NotusAttribute<int> {
