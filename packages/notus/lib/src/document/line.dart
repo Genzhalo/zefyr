@@ -108,8 +108,7 @@ class LineNode extends ContainerNode<LeafNode>
   /// - inline attribute X is included in the result only if it exists
   ///   for every character within this range (line-break characters excluded).
   NotusStyle collectStyle(int offset, int length) {
-    NotusStyle collectStyle(int offset, int length) {
-    int local = math.min(this.length - offset, length);
+    var local = math.min(this.length - offset, length);
 
     NotusStyle result = NotusStyle();
     final data = lookup(offset, inclusive: true);
@@ -117,7 +116,7 @@ class LineNode extends ContainerNode<LeafNode>
   
     if (node != null) {
       result = result.mergeAll(node.style);
-      int pos = node.length - data.offset;
+      var pos = node.length - data.offset;
       while (!node.isLast && pos < local) {
         node = node.next as LeafNode;
         result = result.mergeAll(node.style);
@@ -136,7 +135,6 @@ class LineNode extends ContainerNode<LeafNode>
       result = result.mergeAll(nextLine.collectStyle(0, remaining));
     }
     return result;
-    }
   }
 
   @override
