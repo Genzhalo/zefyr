@@ -136,6 +136,7 @@ class LineNode extends ContainerNode<LeafNode>
       result = result.mergeAll(nextLine.collectStyle(0, remaining));
     }
     return result;
+    }
   }
 
   @override
