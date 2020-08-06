@@ -69,7 +69,7 @@
     },
     {
       "name": "notus",
-      "rootUri": "file:///Users/maryangenzhalo/.pub-cache/git/zefyr-8f5f09e734127da5512a105b90ea83ee8ad5dc89/packages/notus",
+      "rootUri": "file:///Users/maryangenzhalo/.pub-cache/git/zefyr-565c365b3a6480ad8244b9f14d8194290b76bf20/packages/notus",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -170,7 +170,7 @@
       "languageVersion": "2.2"
     }
   ],
-  "generated": "2020-08-06T08:15:14.144617Z",
+  "generated": "2020-08-06T11:38:10.631462Z",
   "generator": "pub",
   "generatorVersion": "2.9.0"
 }

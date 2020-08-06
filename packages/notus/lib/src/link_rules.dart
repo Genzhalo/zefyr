@@ -86,10 +86,6 @@ class LinkRules {
           ..retain(index - candidate.length)
           ..retain(candidate.length, attr..addAll(_getAttr(candidate)))
           ..insert(text, textAttr);
-      } else {
-        return Delta()
-          ..retain(index)
-          ..insert(text, textAttr);
       }
     }
 

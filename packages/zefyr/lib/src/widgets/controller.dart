@@ -119,11 +119,10 @@ class ZefyrController extends ChangeNotifier {
     Delta delta;
   
     if (length > 0) {
-      final iter = DeltaIterator(document.toDelta());
-      iter.skip(index);
-      final next = iter.next();
-      final style = document.collectStyle(index, length);
-      if (next?.hasAttribute(NotusAttribute.title.key)) {
+      final deleteDelta = DeleteTitleRule().apply(document.toDelta(), index, length);
+      if (deleteDelta != null) {
+        deleteDelta.trim();
+        if (deleteDelta.isNotEmpty) document.compose(deleteDelta, ChangeSource.local);
         _updateSelectionSilent(
           selection.copyWith(
             baseOffset: index,
