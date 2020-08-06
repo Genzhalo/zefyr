@@ -28,6 +28,28 @@ class CatchAllInsertRule extends InsertRule {
   }
 }
 
+class PasteToTitleRule extends InsertRule {
+  const PasteToTitleRule();
+
+  @override
+  Delta apply(Delta document, int index, String text) {
+    final iter = DeltaIterator(document);
+    iter.skip(index);
+    while(iter.hasNext){
+      final next = iter.next();
+      if (next.data.contains('\n')){
+        if (next.hasAttribute(NotusAttribute.title.key)){
+          return Delta()
+            ..retain(index)
+            ..insert(text.replaceAll('\n', ' '));
+        }
+        break;
+      }
+    }
+    return null;
+  }
+}
+
 /// Preserves line format when user splits the line into two.
 ///
 /// This rule ignores scenarios when the line is split on its edge, meaning
