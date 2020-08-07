@@ -19,6 +19,7 @@ dependencies:
     git:
       url: git://github.com/Genzhalo/zefyr.git
       path: packages/notus 
+      ref: title-attr
 
 dev_dependencies:
   flutter_test:

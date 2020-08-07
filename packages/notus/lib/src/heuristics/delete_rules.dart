@@ -138,9 +138,9 @@ class EnsureMentionLineRule extends DeleteRule {
 
   @override
   Delta apply(Delta document, int index, int length) {
-    DeltaIterator iter = DeltaIterator(document);
-    Operation op = iter.skip(index);
-    if (op != null && op.hasAttribute("mention")){
+    final iter = DeltaIterator(document);
+    final op = iter.skip(index);
+    if (op != null && op.hasAttribute(NotusAttribute.mention.key)){
       return Delta()
         ..retain(index - op.length)
         ..delete(op.length + length);
@@ -158,6 +158,37 @@ class AutoLinkRule extends DeleteRule {
   Delta apply(Delta document, int index, int length) {
     return LinkRules().delete(document, index, length);
   }
-
-  
 }
+
+
+class DeleteTitleRule extends DeleteRule {
+  const DeleteTitleRule();
+
+  @override
+  Delta apply(Delta document, int index, int length) {
+    final iter = DeltaIterator(document);
+    final end = index + length;
+    var offset = index;
+    var titlePosition = -1;
+    var titleLength = 0;
+    iter.skip(offset);
+    while(iter.hasNext && titlePosition == -1 && offset < end) {
+      final next = iter.next();
+      if (next.hasAttribute(NotusAttribute.title.key)) {
+        titlePosition = offset;
+        titleLength = next.length;
+      }
+      offset += next.length;
+    }
+    if (titlePosition != -1) {
+      return Delta()
+        ..retain(index)
+        ..delete(titlePosition - index)
+        ..retain(titleLength)
+        ..delete(end - titlePosition - titleLength);
+    }
+    return null;
+  }
+
+}
+
