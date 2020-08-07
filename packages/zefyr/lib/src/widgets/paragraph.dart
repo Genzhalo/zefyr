@@ -68,19 +68,43 @@ class ZefyrHeading extends StatelessWidget {
 }
 
 
-
 class ZefyrTitle extends StatelessWidget {
   ZefyrTitle({Key key, @required this.node});
   
   final LineNode node;
 
+  TextNode get _textNode => node.children.isNotEmpty ? node.first : null;
+  
+  bool get _isEmpty => _textNode == null ? true : _textNode.value.isEmpty;
+
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context); 
+    final theme = ZefyrTheme.of(context);
+    final style = theme.paragraphTheme.textStyle.merge(theme.boldStyle); 
+    final padding = theme.paragraphTheme.padding;
+    final lineWidget = _buildLine(style, padding);
+    if (!_isEmpty) return lineWidget;
+    return Stack(
+      children: [
+        lineWidget,
+        _buildPlaceholder(style, padding)
+      ],
+    );
+  }
+
+  Widget _buildLine(TextStyle style, EdgeInsets padding){
     return RawZefyrLine(
       node: node,
-      style: theme.paragraphTheme.textStyle.merge(theme.boldStyle),
-      padding: theme.paragraphTheme.padding,
+      style: style,
+      padding: padding,
+    );
+  }
+
+  Widget _buildPlaceholder(TextStyle style, EdgeInsets padding){
+    final placeholderStyle = style.merge(TextStyle(color: style.color.withOpacity(0.5)));
+    return Padding(
+      padding: padding,
+      child: Text('Add a title', style: placeholderStyle)
     );
   }
 }
