@@ -117,6 +117,39 @@ class ZefyrController extends ChangeNotifier {
   void replaceText(int index, int length, String text,
       {TextSelection selection}) {
     Delta delta;
+  
+    if (length > 0) {
+      final deleteDelta = DeleteTitleRule().apply(document.toDelta(), index, length);
+      if (deleteDelta != null) {
+        deleteDelta.trim();
+        if (deleteDelta.isNotEmpty) document.compose(deleteDelta, ChangeSource.local);
+        _updateSelectionSilent(
+          selection.copyWith(
+            baseOffset: index,
+            extentOffset: index,
+          ),
+          source: ChangeSource.local,
+        );
+        _lastChangeSource = ChangeSource.local;
+        notifyListeners();
+        return;
+      }
+    }
+
+    if (text == '\n' && getSelectionStyle().containsSame(NotusAttribute.title)){
+      final iter = DeltaIterator(document.toDelta());
+      final offset = iter.peekLength() + 1;
+      _updateSelectionSilent(
+        selection.copyWith(
+          baseOffset: offset,
+          extentOffset: offset,
+        ),
+        source: ChangeSource.local,
+      );
+      _lastChangeSource = ChangeSource.local;
+      notifyListeners();
+      return;
+    }
 
     if (length > 0 || text.isNotEmpty) {
       delta = document.replace(index, length, text);
