@@ -298,7 +298,10 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
           _startFloaingGlobalOffset = paragraph.localToGlobal(offsetOfCaret);
       
         }
-        _rectOfEditorContext = _renderContext.getGlobalRect();
+        Offset _cursorBoxOffset = _renderCursor.localToGlobal(Offset.zero);
+        Size _cursorBoxSize = _renderCursor.size;
+        _rectOfEditorContext = Rect.fromLTWH(
+          _cursorBoxOffset.dx, _cursorBoxOffset.dy, _cursorBoxSize.width, _cursorBoxSize.height);
         _renderCursor.update(
           offset: _startFloaingGlobalOffset, 
           lineHeight: preferredLineHeight,
@@ -357,14 +360,14 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   bool _resetOriginOnRight = false;
   bool _resetOriginOnTop = false;
   bool _resetOriginOnBottom = false;
-  double _resetFloatingCursorAnimationValue;  
+  double _floatinCursorPadding = 10;
 
   Offset _calculateBoundedFloatingCursorOffset(Offset rawCursorOffset) {
     Offset deltaPosition = const Offset(0, 0);
-    final double topBound = _rectOfEditorContext.top;
-    final double bottomBound = _rectOfEditorContext.bottom;
-    final double leftBound = _rectOfEditorContext.left;
-    final double rightBound = _rectOfEditorContext.right;
+    final double topBound = _rectOfEditorContext.top + _floatinCursorPadding;
+    final double bottomBound = _rectOfEditorContext.bottom - _floatinCursorPadding;
+    final double leftBound = _rectOfEditorContext.left + _floatinCursorPadding;
+    final double rightBound = _rectOfEditorContext.right - _floatinCursorPadding;
 
     if (_previousOffset != null)
       deltaPosition = rawCursorOffset - _previousOffset;
