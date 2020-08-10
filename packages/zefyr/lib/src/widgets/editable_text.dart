@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/widgets/floating_cursor_box.dart';
 
 import 'caret.dart';
 import 'controller.dart';
@@ -84,6 +85,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   // New public members
   //
 
+  final GlobalKey _cursorKey = GlobalKey();
   /// Document controlled by this widget.
   NotusDocument get document => widget.controller.document;
 
@@ -91,6 +93,9 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   TextSelection get selection => widget.controller.selection;
   FocusNode _focusNode;
   FocusAttachment _focusAttachment;
+
+
+  FloatingCursorRender get _renderCursor => _cursorKey.currentContext.findRenderObject() as FloatingCursorRender;
 
   /// Express interest in interacting with the keyboard.
   ///
@@ -135,7 +140,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   Widget build(BuildContext context) {
     _focusAttachment.reparent();
     super.build(context); // See AutomaticKeepAliveState.
-
+   
     final body = SingleChildScrollView(
       physics: widget.physics,
       controller: _scrollController,
@@ -148,13 +153,15 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     return Stack(
       children: [
         body,
+        Positioned(top: 0, left: 0, right: 0, bottom: 0, child: 
+          FloatingCursorWidget(key: _cursorKey, cursorColor: ZefyrTheme.of(context).cursorColor)
+        ),
         Positioned(top: 0, left: 0, right: 0, bottom: 0, child: ZefyrSelectionOverlay(
           controls: widget.selectionControls ?? defaultSelectionControls(context),
         )
       )
     ]);
   }
-
 
   @override
   void initState() {
@@ -276,24 +283,36 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   Offset _startFloaingGlobalOffset;
   Rect _rectOfEditorContext = Rect.zero;
 
+
   void _updateFloatinCursor(RawFloatingCursorPoint point){
     switch(point.state){
       case FloatingCursorDragState.Start:
         final paragraph = _renderContext.boxForTextOffset(selection.baseOffset);
+        double preferredLineHeight;
         if (paragraph != null) {
+          preferredLineHeight = paragraph.preferredLineHeight;
           final offsetOfCaret = paragraph.getOffsetForCaret(
             TextPosition(offset: selection.baseOffset, affinity: selection.affinity),
             CursorPainter.buildPrototype(2)
           );
           _startFloaingGlobalOffset = paragraph.localToGlobal(offsetOfCaret);
+      
         }
         _rectOfEditorContext = _renderContext.getGlobalRect();
+        _renderCursor.update(
+          offset: _startFloaingGlobalOffset, 
+          lineHeight: preferredLineHeight,
+          state: point.state
+        );
         break;
       case FloatingCursorDragState.Update:
         final newOffset = _calculateBoundedFloatingCursorOffset(_startFloaingGlobalOffset + point.offset);
-        final paragraph = _renderContext.boxForGlobalPoint(newOffset);
+        final paragraphOffset = newOffset.translate(0, 10);
+        final paragraph = _renderContext.boxForGlobalPoint(paragraphOffset);
+        double preferredLineHeight;
         if (paragraph != null) {
-          final newSelection = paragraph.getPositionForOffset(paragraph.globalToLocal(newOffset));
+          preferredLineHeight = paragraph.preferredLineHeight;
+          final newSelection = paragraph.getPositionForOffset(paragraph.globalToLocal(paragraphOffset));
           if (newSelection.offset != selection.baseOffset){
             widget.controller.updateSelection(
               TextSelection(
@@ -303,6 +322,11 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
             );         
           }
         } 
+        _renderCursor.update(
+          offset: newOffset, 
+          lineHeight: preferredLineHeight,
+          state: point.state
+        );
         break;
       case FloatingCursorDragState.End:
         _startFloaingGlobalOffset = null;
@@ -313,6 +337,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
         _resetOriginOnTop = false;
         _resetOriginOnBottom = false;
         _relativeOrigin = Offset(0, 0);
+        _renderCursor.update(offset: Offset.zero, state: point.state);
         break;
     }
   }
