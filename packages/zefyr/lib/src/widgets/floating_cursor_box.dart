@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:zefyr/src/widgets/caret.dart';
 
 const Offset _kFloatingCaretSizeIncrease = Offset(0.5, 1.0);
@@ -40,6 +41,8 @@ class FloatingCursorRender extends RenderBox with RenderObjectWithChildMixin<Ren
   void performResize() {
     size = constraints.biggest;
   }
+
+  bool get isCursor => _isCursor;
 
   @override
   void paint(PaintingContext context, Offset offset) {

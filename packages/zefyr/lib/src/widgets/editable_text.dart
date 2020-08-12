@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/widgets/editable_box.dart';
 import 'package:zefyr/src/widgets/floating_cursor_box.dart';
 
 import 'caret.dart';
@@ -273,35 +274,68 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     updateKeepAlive();
   }
 
-  void _handleRemoteValueChange(
-      int start, String deleted, String inserted, TextSelection selection) {
+  void _handleRemoteValueChange(int start, String deleted, String inserted, TextSelection selection) {
     widget.controller
         .replaceText(start, deleted.length, inserted, selection: selection);
+        
+    if (selection.isCollapsed && !_renderCursor.isCursor) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _bringIntoView();
+      });
+    }
   }
 
+  void _bringIntoView() {
+    final caretRect = getGlobalRectCaretByRenderBox(boxOfSelection);
+    final viewportRect = floationCursorRect;
+    final position = _scrollController.position;
+
+    if (caretRect.bottom > viewportRect.bottom) {
+      final value = math.min(
+        position.maxScrollExtent, 
+        position.pixels + caretRect.height + caretRect.bottom - viewportRect.bottom);
+      _scrollController.jumpTo(value);
+    }
+
+    if (caretRect.top < viewportRect.top) {
+      final value = math.max(position.minScrollExtent, position.pixels + caretRect.top - viewportRect.top);
+      _scrollController.jumpTo(value);
+    }
+  }
 
   Offset _startFloaingGlobalOffset;
   Rect _rectOfEditorContext = Rect.zero;
 
+  Rect getGlobalRectCaretByRenderBox(RenderEditableProxyBox box){
+    final caret = CursorPainter.buildPrototype(box.preferredLineHeight);
+    final offsetOfCaret = box.getOffsetForCaret(
+      TextPosition(offset: selection.baseOffset, affinity: selection.affinity),
+      caret
+    );
+    final offset = box.localToGlobal(offsetOfCaret);
+    return Rect.fromLTWH(offset.dx, offset.dy, caret.width, caret.height);
+  }
+
+  RenderEditableProxyBox get boxOfSelection => _renderContext.boxForTextOffset(selection.baseOffset);
+
+
+  Rect get floationCursorRect {
+    Offset _cursorBoxOffset = _renderCursor.localToGlobal(Offset.zero);
+    Size _cursorBoxSize = _renderCursor.size;
+    return Rect.fromLTWH(_cursorBoxOffset.dx, _cursorBoxOffset.dy, _cursorBoxSize.width, _cursorBoxSize.height);
+  }
 
   void _updateFloatinCursor(RawFloatingCursorPoint point){
     switch(point.state){
       case FloatingCursorDragState.Start:
-        final paragraph = _renderContext.boxForTextOffset(selection.baseOffset);
+        final paragraph = boxOfSelection;
         double preferredLineHeight;
         if (paragraph != null) {
           preferredLineHeight = paragraph.preferredLineHeight;
-          final offsetOfCaret = paragraph.getOffsetForCaret(
-            TextPosition(offset: selection.baseOffset, affinity: selection.affinity),
-            CursorPainter.buildPrototype(2)
-          );
-          _startFloaingGlobalOffset = paragraph.localToGlobal(offsetOfCaret);
-      
+          final caretRect = getGlobalRectCaretByRenderBox(paragraph);
+          _startFloaingGlobalOffset = Offset(caretRect.left, caretRect.top);
         }
-        Offset _cursorBoxOffset = _renderCursor.localToGlobal(Offset.zero);
-        Size _cursorBoxSize = _renderCursor.size;
-        _rectOfEditorContext = Rect.fromLTWH(
-          _cursorBoxOffset.dx, _cursorBoxOffset.dy, _cursorBoxSize.width, _cursorBoxSize.height);
+        _rectOfEditorContext = floationCursorRect;
         _renderCursor.update(
           offset: _startFloaingGlobalOffset, 
           lineHeight: preferredLineHeight,
@@ -364,8 +398,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
 
   Offset _calculateBoundedFloatingCursorOffset(Offset rawCursorOffset) {
     Offset deltaPosition = const Offset(0, 0);
-    final double topBound = _rectOfEditorContext.top + _floatinCursorPadding;
-    final double bottomBound = _rectOfEditorContext.bottom - _floatinCursorPadding;
+    final double topBound = _rectOfEditorContext.top;
+    final double bottomBound = _rectOfEditorContext.bottom - _floatinCursorPadding * 2;
     final double leftBound = _rectOfEditorContext.left + _floatinCursorPadding;
     final double rightBound = _rectOfEditorContext.right - _floatinCursorPadding;
 
