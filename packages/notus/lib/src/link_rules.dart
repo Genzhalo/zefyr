@@ -45,7 +45,7 @@ class LinkRules {
 
 
   Delta insert(Delta document, int index, String text) {
-    
+
     if (_isLink(text, asPart: false)){
       return Delta()
         ..retain(index)
@@ -93,7 +93,7 @@ class LinkRules {
       return Delta()
         ..retain(index)
         ..insert(text, prev.attributes);
-    } 
+    }
 
     return null;
   }
@@ -118,7 +118,7 @@ class LinkRules {
     return null;
   }
 
-    
+
   bool _hasLink(Operation operation) =>
     operation != null && operation.attributes != null && operation.attributes.containsKey(NotusAttribute.link.key);
 
@@ -130,6 +130,6 @@ class LinkRules {
 
   Map<String, dynamic> _getAttr(String text) {
     if (text.startsWith('//')) text = 'https:' + text;
-    return NotusAttribute.link.fromString(text.toLowerCase()).toJson();
-  } 
+    return NotusAttribute.link.fromString(text).toJson();
+  }
 }
