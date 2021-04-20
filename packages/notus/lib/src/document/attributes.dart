@@ -427,9 +427,12 @@ class EmbedAttributeBuilder
 
   NotusAttribute<Map<String, dynamic>> image(String source) =>
       EmbedAttribute.image(source);
-  
+
   NotusAttribute<Map<String, dynamic>> looker(Map<String, dynamic> source) =>
     EmbedAttribute.looker(source);
+
+  NotusAttribute<Map<String, dynamic>> file(Map<String, dynamic> source) =>
+    EmbedAttribute.file(source);
 
   @override
   NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
@@ -439,7 +442,7 @@ class EmbedAttributeBuilder
 }
 
 /// Type of embedded content.
-enum EmbedType { horizontalRule, image, looker }
+enum EmbedType { horizontalRule, image, looker, file }
 
 class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   static const _kValueEquality = MapEquality<String, dynamic>();
@@ -447,6 +450,7 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   static const _kHorizontalRuleEmbed = 'hr';
   static const _kImageEmbed = 'image';
   static const _kLookerEmbed = 'looker';
+  static const _kFileEmbed = 'file';
 
   EmbedAttribute._(Map<String, dynamic> value)
       : super._(_kEmbed, NotusAttributeScope.inline, value);
@@ -460,12 +464,16 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   EmbedAttribute.looker(Map<String, dynamic> source)
       : this._({'type': _kLookerEmbed, 'source': source});
 
+  EmbedAttribute.file(Map<String, dynamic> source)
+      : this._({'type': _kFileEmbed, 'source': source});
+
 
   /// Type of this embed.
   EmbedType get type {
     if (value['type'] == _kHorizontalRuleEmbed) return EmbedType.horizontalRule;
     if (value['type'] == _kImageEmbed) return EmbedType.image;
     if (value['type'] == _kLookerEmbed) return EmbedType.looker;
+    if (value['type'] == _kFileEmbed) return EmbedType.file;
     assert(false, 'Unknown embed attribute value $value.');
     return null;
   }
