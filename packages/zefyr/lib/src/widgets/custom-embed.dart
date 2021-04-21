@@ -1,7 +1,6 @@
 // Copyright (c) 2018, the Zefyr project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -13,33 +12,32 @@ import 'package:notus/notus.dart';
 import 'editable_box.dart';
 
 @experimental
-abstract class ZefyrLookerDelegate<S> {
-  Widget buildLooker(BuildContext context, Map<String, dynamic> source);
-  Future<String> pickLooker(S source);
+abstract class ZefyrCustomEmbedDelegate<S> {
+  Widget build(BuildContext context, Map<String, dynamic> source);
 }
 
-class ZefyrLooker extends StatefulWidget {
-  const ZefyrLooker({Key key, @required this.node, @required this.delegate})
+class ZefyrCustomEmbed extends StatefulWidget {
+  const ZefyrCustomEmbed({Key key, @required this.node, @required this.delegate})
       : super(key: key);
 
   final EmbedNode node;
-  final ZefyrLookerDelegate delegate;
+  final ZefyrCustomEmbedDelegate delegate;
 
   @override
-  _ZefyrLookerState createState() => _ZefyrLookerState();
+  _ZefyrCustomEmbedState createState() => _ZefyrCustomEmbedState();
 }
 
-class _ZefyrLookerState extends State<ZefyrLooker> {
-  Map<String, dynamic> get lookerSource {
+class _ZefyrCustomEmbedState extends State<ZefyrCustomEmbed> {
+  Map<String, dynamic> get source {
     EmbedAttribute attribute = widget.node.style.get(NotusAttribute.embed);
     return attribute.value['source'] as Map<String, dynamic>;
   }
 
   @override
   Widget build(BuildContext context) {
-    final image = widget.delegate.buildLooker(context, lookerSource);
+    final embed = widget.delegate.build(context, source);
     return _EditableLooker(
-      child: image,
+      child: embed,
       node: widget.node,
     );
   }

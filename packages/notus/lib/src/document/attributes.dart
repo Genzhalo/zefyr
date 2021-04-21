@@ -417,8 +417,7 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
       NotusAttribute<String>._(key, scope, 'quote');
 }
 
-class EmbedAttributeBuilder
-    extends NotusAttributeBuilder<Map<String, dynamic>> {
+class EmbedAttributeBuilder  extends NotusAttributeBuilder<Map<String, dynamic>> {
   const EmbedAttributeBuilder._()
       : super._(EmbedAttribute._kEmbed, NotusAttributeScope.inline);
 
@@ -434,6 +433,9 @@ class EmbedAttributeBuilder
   NotusAttribute<Map<String, dynamic>> file(Map<String, dynamic> source) =>
     EmbedAttribute.file(source);
 
+  NotusAttribute<Map<String, dynamic>> oembed(Map<String, dynamic> source) =>
+    EmbedAttribute.oembed(source);
+
   @override
   NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
 
@@ -442,7 +444,7 @@ class EmbedAttributeBuilder
 }
 
 /// Type of embedded content.
-enum EmbedType { horizontalRule, image, looker, file }
+enum EmbedType { horizontalRule, image, looker, file, oembed }
 
 class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   static const _kValueEquality = MapEquality<String, dynamic>();
@@ -451,6 +453,7 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   static const _kImageEmbed = 'image';
   static const _kLookerEmbed = 'looker';
   static const _kFileEmbed = 'file';
+  static const _kOembedEmbed = 'oembed';
 
   EmbedAttribute._(Map<String, dynamic> value)
       : super._(_kEmbed, NotusAttributeScope.inline, value);
@@ -467,6 +470,8 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   EmbedAttribute.file(Map<String, dynamic> source)
       : this._({'type': _kFileEmbed, 'source': source});
 
+  EmbedAttribute.oembed(Map<String, dynamic> source)
+      : this._({'type': _kOembedEmbed, 'source': source});
 
   /// Type of this embed.
   EmbedType get type {
@@ -474,6 +479,7 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
     if (value['type'] == _kImageEmbed) return EmbedType.image;
     if (value['type'] == _kLookerEmbed) return EmbedType.looker;
     if (value['type'] == _kFileEmbed) return EmbedType.file;
+    if (value['type'] == _kOembedEmbed) return EmbedType.oembed;
     assert(false, 'Unknown embed attribute value $value.');
     return null;
   }
