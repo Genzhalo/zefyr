@@ -59,6 +59,8 @@ class ZefyrScope extends ChangeNotifier {
         _controller = controller,
         _imageDelegate = imageDelegate,
         _lookerDelegate = lookerDelegate,
+        _fileDelegate = fileDelegate,
+        _oembedDelegate = oembedDelegate,
         _focusNode = focusNode,
         _focusScope = focusScope,
         _cursorTimer = CursorTimer(),
