@@ -53,6 +53,8 @@ class ZefyrViewState extends State<ZefyrView> {
     super.didUpdateWidget(oldWidget);
     _scope.imageDelegate = widget.imageDelegate;
     _scope.lookerDelegate = widget.lookerDelegate;
+    _scope.oembedDelegate = widget.oembedDelegate;
+    _scope.fileDelegate = widget.fileDelegate;
   }
 
   @override

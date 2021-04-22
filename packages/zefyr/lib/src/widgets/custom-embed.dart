@@ -14,6 +14,7 @@ import 'editable_box.dart';
 @experimental
 abstract class ZefyrCustomEmbedDelegate<S> {
   Widget build(BuildContext context, Map<String, dynamic> source);
+  void onTap(){}
 }
 
 class ZefyrCustomEmbed extends StatefulWidget {
@@ -36,40 +37,43 @@ class _ZefyrCustomEmbedState extends State<ZefyrCustomEmbed> {
   @override
   Widget build(BuildContext context) {
     final embed = widget.delegate.build(context, source);
-    return _EditableLooker(
+    return _EditableEmbed(
       child: embed,
       node: widget.node,
     );
   }
 }
 
-class _EditableLooker extends SingleChildRenderObjectWidget {
-  _EditableLooker({@required Widget child, @required this.node})
+class _EditableEmbed extends SingleChildRenderObjectWidget {
+  _EditableEmbed({@required Widget child, @required this.node, this.delegate })
       : assert(node != null),
         super(child: child);
 
   final EmbedNode node;
+  final ZefyrCustomEmbedDelegate delegate;
 
   @override
-  RenderEditableLooker createRenderObject(BuildContext context) {
-    return RenderEditableLooker(node: node);
+  RenderEditableEmbed createRenderObject(BuildContext context) {
+    return RenderEditableEmbed(node: node, delegate: delegate);
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderEditableLooker renderObject) {
+      BuildContext context, RenderEditableEmbed renderObject) {
     renderObject..node = node;
   }
 }
 
-class RenderEditableLooker extends RenderBox
+class RenderEditableEmbed extends RenderBox
     with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin<RenderBox>
     implements RenderEditableBox {
   static const kPaddingBottom = 24.0;
+  final ZefyrCustomEmbedDelegate delegate;
 
-  RenderEditableLooker({
+  RenderEditableEmbed({
     RenderImage child,
     @required EmbedNode node,
+    this.delegate
   }) : _node = node {
     this.child = child;
   }
@@ -212,5 +216,6 @@ class RenderEditableLooker extends RenderBox
   @override
   void onTapHandle(ui.Offset offset) {
     // TODO: implement onTapHandle
+    delegate.onTap();
   }
 }
