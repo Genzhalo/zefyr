@@ -38,6 +38,7 @@ class _ZefyrCustomEmbedState extends State<ZefyrCustomEmbed> {
   Widget build(BuildContext context) {
     final embed = widget.delegate.build(context, source);
     return _EditableEmbed(
+      delegate: widget.delegate,
       child: embed,
       node: widget.node,
     );
