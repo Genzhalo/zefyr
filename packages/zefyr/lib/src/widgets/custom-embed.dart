@@ -14,7 +14,7 @@ import 'editable_box.dart';
 @experimental
 abstract class ZefyrCustomEmbedDelegate<S> {
   Widget build(BuildContext context, Map<String, dynamic> source);
-  void onTap(){}
+  void onTap(Map<String, dynamic> source){}
 }
 
 class ZefyrCustomEmbed extends StatefulWidget {
@@ -216,7 +216,7 @@ class RenderEditableEmbed extends RenderBox
 
   @override
   void onTapHandle(ui.Offset offset) {
-    // TODO: implement onTapHandle
-    delegate.onTap();
+    EmbedAttribute attribute = node.style.get(NotusAttribute.embed);
+    delegate.onTap(attribute.value["source"]);
   }
 }
