@@ -68,7 +68,7 @@ class _EditableEmbed extends SingleChildRenderObjectWidget {
 class RenderEditableEmbed extends RenderBox
     with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin<RenderBox>
     implements RenderEditableBox {
-  static const kPaddingBottom = 24.0;
+  static const kPaddingBottom = 0;
   final ZefyrCustomEmbedDelegate delegate;
 
   RenderEditableEmbed({
