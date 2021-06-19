@@ -15,10 +15,11 @@ dependencies:
   quill_delta: ^1.0.0-dev.1.0
   meta: ^1.1.0
   quiver_hashcode: ^2.0.0
-  notus: 
+  notus:
     git:
       url: git://github.com/Genzhalo/zefyr.git
-      path: packages/notus 
+      path: packages/notus
+      ref: file-embed
 
 dev_dependencies:
   flutter_test:

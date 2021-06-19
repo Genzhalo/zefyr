@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notus/notus.dart';
-import 'package:zefyr/src/widgets/looker.dart';
-
 import 'controller.dart';
 import 'cursor_timer.dart';
+import 'custom-embed.dart';
 import 'editor.dart';
 import 'image.dart';
 import 'mode.dart';
@@ -26,11 +25,18 @@ class ZefyrScope extends ChangeNotifier {
   /// Creates a view-only scope.
   ///
   /// Normally used in [ZefyrView].
-  ZefyrScope.view({ZefyrImageDelegate imageDelegate, ZefyrLookerDelegate lookerDelegate})
-      : isEditable = false,
-        _mode = ZefyrMode.view,
-        _imageDelegate = imageDelegate,
-        _lookerDelegate = lookerDelegate;
+  ZefyrScope.view({
+    ZefyrImageDelegate imageDelegate,
+    ZefyrCustomEmbedDelegate lookerDelegate,
+    ZefyrCustomEmbedDelegate fileDelegate,
+    ZefyrCustomEmbedDelegate oembedDelegate
+  }) :
+      isEditable = false,
+      _mode = ZefyrMode.view,
+      _imageDelegate = imageDelegate,
+      _fileDelegate = fileDelegate,
+      _lookerDelegate = lookerDelegate,
+      _oembedDelegate = oembedDelegate;
 
   /// Creates editable scope.
   ///
@@ -41,7 +47,9 @@ class ZefyrScope extends ChangeNotifier {
     @required FocusNode focusNode,
     @required FocusScopeNode focusScope,
     ZefyrImageDelegate imageDelegate,
-    ZefyrLookerDelegate lookerDelegate,
+    ZefyrCustomEmbedDelegate lookerDelegate,
+    ZefyrCustomEmbedDelegate fileDelegate,
+    ZefyrCustomEmbedDelegate oembedDelegate
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -51,6 +59,8 @@ class ZefyrScope extends ChangeNotifier {
         _controller = controller,
         _imageDelegate = imageDelegate,
         _lookerDelegate = lookerDelegate,
+        _fileDelegate = fileDelegate,
+        _oembedDelegate = oembedDelegate,
         _focusNode = focusNode,
         _focusScope = focusScope,
         _cursorTimer = CursorTimer(),
@@ -63,15 +73,33 @@ class ZefyrScope extends ChangeNotifier {
 
   static ZefyrScope of(BuildContext context) {
     final ZefyrScopeAccess widget =
-        context.inheritFromWidgetOfExactType(ZefyrScopeAccess);
+        context.dependOnInheritedWidgetOfExactType<ZefyrScopeAccess>();
     return widget.scope;
   }
 
-  ZefyrLookerDelegate _lookerDelegate;
-  ZefyrLookerDelegate get lookerDelegate => _lookerDelegate;
-  set lookerDelegate(ZefyrLookerDelegate value) {
+  ZefyrCustomEmbedDelegate _lookerDelegate;
+  ZefyrCustomEmbedDelegate get lookerDelegate => _lookerDelegate;
+  set lookerDelegate(ZefyrCustomEmbedDelegate value) {
     if (_lookerDelegate != value) {
       _lookerDelegate = value;
+      notifyListeners();
+    }
+  }
+
+  ZefyrCustomEmbedDelegate _fileDelegate;
+  ZefyrCustomEmbedDelegate get fileDelegate => _fileDelegate;
+  set fileDelegate(ZefyrCustomEmbedDelegate value) {
+    if (_fileDelegate != value) {
+      _fileDelegate = value;
+      notifyListeners();
+    }
+  }
+
+  ZefyrCustomEmbedDelegate _oembedDelegate;
+  ZefyrCustomEmbedDelegate get oembedDelegate => _oembedDelegate;
+  set oembedDelegate(ZefyrCustomEmbedDelegate value) {
+    if (_oembedDelegate != value) {
+      _oembedDelegate = value;
       notifyListeners();
     }
   }

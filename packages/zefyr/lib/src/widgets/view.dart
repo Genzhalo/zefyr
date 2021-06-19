@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:notus/notus.dart';
-import 'package:zefyr/src/widgets/looker.dart';
 import 'package:zefyr/zefyr.dart';
+import 'custom-embed.dart';
 import 'image.dart';
 import 'scope.dart';
 import 'theme.dart';
@@ -15,10 +15,17 @@ import 'theme.dart';
 class ZefyrView extends StatefulWidget {
   final NotusDocument document;
   final ZefyrImageDelegate imageDelegate;
-  final ZefyrLookerDelegate lookerDelegate;
-  
-  const ZefyrView({Key key, @required this.document, this.imageDelegate, this.lookerDelegate })
-      : super(key: key);
+  final ZefyrCustomEmbedDelegate lookerDelegate;
+  final ZefyrCustomEmbedDelegate fileDelegate;
+  final ZefyrCustomEmbedDelegate oembedDelegate;
+
+  const ZefyrView({
+    Key key,
+    @required this.document,
+    this.imageDelegate,
+    this.lookerDelegate,
+    this.fileDelegate,
+    this.oembedDelegate }) : super(key: key);
 
   @override
   ZefyrViewState createState() => ZefyrViewState();
@@ -33,7 +40,12 @@ class ZefyrViewState extends State<ZefyrView> {
   @override
   void initState() {
     super.initState();
-    _scope = ZefyrScope.view(imageDelegate: widget.imageDelegate, lookerDelegate: widget.lookerDelegate );
+    _scope = ZefyrScope.view(
+      imageDelegate: widget.imageDelegate,
+      lookerDelegate: widget.lookerDelegate,
+      oembedDelegate: widget.oembedDelegate,
+      fileDelegate: widget.fileDelegate
+    );
   }
 
   @override
@@ -41,6 +53,8 @@ class ZefyrViewState extends State<ZefyrView> {
     super.didUpdateWidget(oldWidget);
     _scope.imageDelegate = widget.imageDelegate;
     _scope.lookerDelegate = widget.lookerDelegate;
+    _scope.oembedDelegate = widget.oembedDelegate;
+    _scope.fileDelegate = widget.fileDelegate;
   }
 
   @override

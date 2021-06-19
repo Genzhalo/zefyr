@@ -5,8 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:zefyr/src/widgets/looker.dart';
-
+import 'package:zefyr/zefyr.dart';
 import 'editable_box.dart';
 import 'horizontal_rule.dart';
 import 'image.dart';
@@ -136,14 +135,19 @@ class _RawZefyrLineState extends State<RawZefyrLine> {
   Widget buildEmbed(BuildContext context, ZefyrScope scope) {
     EmbedNode node = widget.node.children.single;
     EmbedAttribute embed = node.style.get(NotusAttribute.embed);
-    if (embed.type == EmbedType.looker) {
-      return ZefyrLooker(node: node, delegate: scope.lookerDelegate);
-    } else if (embed.type == EmbedType.horizontalRule) {
-      return ZefyrHorizontalRule(node: node);
-    } else if (embed.type == EmbedType.image) {
-      return ZefyrImage(node: node, delegate: scope.imageDelegate);
-    } else {
-      throw UnimplementedError('Unimplemented embed type ${embed.type}');
+    switch (embed.type) {
+      case EmbedType.looker:
+        return ZefyrCustomEmbed(node: node, delegate: scope.lookerDelegate);
+      case EmbedType.file:
+        return ZefyrCustomEmbed(node: node, delegate: scope.fileDelegate);
+      case EmbedType.oembed:
+        return ZefyrCustomEmbed(node: node, delegate: scope.oembedDelegate);
+      case EmbedType.horizontalRule:
+        return ZefyrHorizontalRule(node: node);
+      case EmbedType.image:
+        return ZefyrImage(node: node, delegate: scope.imageDelegate);
+      default:
+        throw UnimplementedError('Unimplemented embed type ${embed.type}');
     }
   }
 }
@@ -159,7 +163,7 @@ class LinkTextSpan extends TextSpan {
   LinkTextSpan({ String text, TextStyle style, this.link, this.isEnabled = false }) : super(text: text, style: style);
 
   void onTap() async {
-    if (isEnabled) { 
+    if (isEnabled) {
       if (await canLaunch(link)) {
         await launch(link);
       }

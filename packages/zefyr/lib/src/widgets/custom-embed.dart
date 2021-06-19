@@ -1,7 +1,6 @@
 // Copyright (c) 2018, the Zefyr project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -13,65 +12,69 @@ import 'package:notus/notus.dart';
 import 'editable_box.dart';
 
 @experimental
-abstract class ZefyrLookerDelegate<S> {
-  Widget buildLooker(BuildContext context, Map<String, dynamic> source);
-  Future<String> pickLooker(S source);
+abstract class ZefyrCustomEmbedDelegate<S> {
+  Widget build(BuildContext context, Map<String, dynamic> source);
+  void onTap(Map<String, dynamic> source){}
 }
 
-class ZefyrLooker extends StatefulWidget {
-  const ZefyrLooker({Key key, @required this.node, @required this.delegate})
+class ZefyrCustomEmbed extends StatefulWidget {
+  const ZefyrCustomEmbed({Key key, @required this.node, @required this.delegate})
       : super(key: key);
 
   final EmbedNode node;
-  final ZefyrLookerDelegate delegate;
+  final ZefyrCustomEmbedDelegate delegate;
 
   @override
-  _ZefyrLookerState createState() => _ZefyrLookerState();
+  _ZefyrCustomEmbedState createState() => _ZefyrCustomEmbedState();
 }
 
-class _ZefyrLookerState extends State<ZefyrLooker> {
-  Map<String, dynamic> get lookerSource {
+class _ZefyrCustomEmbedState extends State<ZefyrCustomEmbed> {
+  Map<String, dynamic> get source {
     EmbedAttribute attribute = widget.node.style.get(NotusAttribute.embed);
     return attribute.value['source'] as Map<String, dynamic>;
   }
 
   @override
   Widget build(BuildContext context) {
-    final image = widget.delegate.buildLooker(context, lookerSource);
-    return _EditableLooker(
-      child: image,
+    final embed = widget.delegate.build(context, source);
+    return _EditableEmbed(
+      delegate: widget.delegate,
+      child: embed,
       node: widget.node,
     );
   }
 }
 
-class _EditableLooker extends SingleChildRenderObjectWidget {
-  _EditableLooker({@required Widget child, @required this.node})
+class _EditableEmbed extends SingleChildRenderObjectWidget {
+  _EditableEmbed({@required Widget child, @required this.node, this.delegate })
       : assert(node != null),
         super(child: child);
 
   final EmbedNode node;
+  final ZefyrCustomEmbedDelegate delegate;
 
   @override
-  RenderEditableLooker createRenderObject(BuildContext context) {
-    return RenderEditableLooker(node: node);
+  RenderEditableEmbed createRenderObject(BuildContext context) {
+    return RenderEditableEmbed(node: node, delegate: delegate);
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderEditableLooker renderObject) {
+      BuildContext context, RenderEditableEmbed renderObject) {
     renderObject..node = node;
   }
 }
 
-class RenderEditableLooker extends RenderBox
+class RenderEditableEmbed extends RenderBox
     with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin<RenderBox>
     implements RenderEditableBox {
-  static const kPaddingBottom = 24.0;
+  static const kPaddingBottom = 0;
+  final ZefyrCustomEmbedDelegate delegate;
 
-  RenderEditableLooker({
+  RenderEditableEmbed({
     RenderImage child,
     @required EmbedNode node,
+    this.delegate
   }) : _node = node {
     this.child = child;
   }
@@ -213,6 +216,7 @@ class RenderEditableLooker extends RenderBox
 
   @override
   void onTapHandle(ui.Offset offset) {
-    // TODO: implement onTapHandle
+    EmbedAttribute attribute = node.style.get(NotusAttribute.embed);
+    delegate.onTap(attribute.value["source"]);
   }
 }

@@ -4,8 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:zefyr/src/widgets/looker.dart';
-
+import 'package:zefyr/src/widgets/custom-embed.dart';
 import 'controller.dart';
 import 'editable_text.dart';
 import 'image.dart';
@@ -26,13 +25,15 @@ class ZefyrEditor extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.toolbarDelegate,
     this.imageDelegate,
+    this.fileDelegate,
+    this.oembedDelegate,
     this.lookerDelegate,
     this.selectionControls,
     this.physics,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
-        super(key: key);   
+        super(key: key);
 
   /// Controls the document being edited.
   final ZefyrController controller;
@@ -61,10 +62,11 @@ class ZefyrEditor extends StatefulWidget {
   final ZefyrImageDelegate imageDelegate;
 
 
-  /// Delegate for resolving embedded images.
-  ///
   /// This delegate is required if embedding loooker is allowed.
-  final ZefyrLookerDelegate lookerDelegate;
+  final ZefyrCustomEmbedDelegate lookerDelegate;
+
+  final ZefyrCustomEmbedDelegate fileDelegate;
+  final ZefyrCustomEmbedDelegate oembedDelegate;
 
   /// Optional delegate for building the text selection handles and toolbar.
   ///
@@ -143,8 +145,16 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       _scope.imageDelegate = _imageDelegate;
     }
 
-     if (widget.lookerDelegate != oldWidget.lookerDelegate) {
-       _scope.lookerDelegate = widget.lookerDelegate;
+    if (widget.lookerDelegate != oldWidget.lookerDelegate) {
+      _scope.lookerDelegate = widget.lookerDelegate;
+    }
+
+    if (widget.fileDelegate != oldWidget.fileDelegate) {
+      _scope.fileDelegate = widget.fileDelegate;
+    }
+
+    if (widget.oembedDelegate != oldWidget.oembedDelegate) {
+      _scope.oembedDelegate = widget.oembedDelegate;
     }
   }
 
@@ -162,6 +172,8 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
         mode: widget.mode,
         imageDelegate: _imageDelegate,
         lookerDelegate: widget.lookerDelegate,
+        oembedDelegate: widget.oembedDelegate,
+        fileDelegate: widget.fileDelegate,
         controller: widget.controller,
         focusNode: widget.focusNode,
         focusScope: FocusScope.of(context),
